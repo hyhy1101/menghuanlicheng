@@ -433,12 +433,12 @@ h2 {
   box-shadow: var(--elev-inset-sm);
 }
 .day-col.today {
-  /* 今天：从下沉托盘里浮起来，整列染一层淡主题色 + 实心描边 + 主题色投影 */
-  background: color-mix(in srgb, var(--accent-500) 7%, var(--surface-card));
-  box-shadow:
-    0 0 0 2px var(--accent-500),
-    0 10px 22px -6px rgb(var(--accent-rgb) / 0.45),
-    var(--elev-raised-sm);
+  /* 今天：整列染一层淡主题色 + 主题色描边。
+     描边用 border 而不是外扩阴影：el-tabs__content 是 overflow:hidden，
+     七列又正好贴着它的左边和下边，向外的描边会被裁掉。 */
+  background: color-mix(in srgb, var(--accent-500) 8%, var(--surface-card));
+  border: 2px solid var(--accent-500);
+  box-shadow: inset 3px 3px 10px rgb(var(--accent-rgb) / 0.14);
 }
 .day-head {
   display: flex;
