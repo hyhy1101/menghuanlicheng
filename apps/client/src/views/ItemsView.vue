@@ -276,57 +276,59 @@ onMounted(async () => {
       <span class="count">共 {{ total }} 件</span>
     </div>
 
-    <el-table v-loading="loading" :data="list" height="calc(100vh - 275px)" class="tbl">
-      <el-table-column label="图标" width="64">
-        <template #default="{ row }">
-          <img v-if="row.iconUrl" :src="assetUrl(row.iconUrl)!" class="icon" alt="" />
-          <div v-else class="icon placeholder">{{ row.name.slice(0, 1) }}</div>
-        </template>
-      </el-table-column>
-      <el-table-column prop="name" label="物品名" min-width="150" />
-      <el-table-column label="分类" width="90">
-        <template #default="{ row }">{{ CATEGORY_LABEL[row.category as ItemCategory] }}</template>
-      </el-table-column>
-      <el-table-column label="价格类型" width="110">
-        <template #default="{ row }">
-          <el-tag :type="row.isFixedPrice ? 'success' : 'info'" size="small" effect="plain">
-            {{ row.isFixedPrice ? '固定价格' : '按次录入' }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="商人收购" width="110" align="right">
-        <template #default="{ row }">
-          {{ row.isFixedPrice ? priceText(prices.get(row.id)?.merchantPrice) : '—' }}
-        </template>
-      </el-table-column>
-      <el-table-column label="个人收购" width="110" align="right">
-        <template #default="{ row }">
-          {{ row.isFixedPrice ? priceText(prices.get(row.id)?.personalPrice) : '—' }}
-        </template>
-      </el-table-column>
-      <el-table-column label="用户录入价" width="110" align="right">
-        <template #default="{ row }">
-          <span :class="{ missing: row.isFixedPrice && !prices.get(row.id)?.userPrice }">
-            {{ row.isFixedPrice ? priceText(prices.get(row.id)?.userPrice) : '—' }}
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" width="252" fixed="right">
-        <template #default="{ row }">
-          <el-button
-            v-if="row.isFixedPrice"
-            link
-            type="primary"
-            @click="openPrice(row)"
-          >
-            维护价格
-          </el-button>
-          <el-button link @click="openEdit(row)">编辑</el-button>
-          <el-button link @click="pickIcon(row)">换图标</el-button>
-          <el-button v-if="row.status === 'ENABLED'" link type="danger" @click="disableItem(row)">停用</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div class="tbl-wrap">
+      <el-table v-loading="loading" :data="list" height="calc(100vh - 287px)">
+        <el-table-column label="图标" width="64">
+          <template #default="{ row }">
+            <img v-if="row.iconUrl" :src="assetUrl(row.iconUrl)!" class="icon" alt="" />
+            <div v-else class="icon placeholder">{{ row.name.slice(0, 1) }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="name" label="物品名" min-width="170" />
+        <el-table-column label="分类" width="90">
+          <template #default="{ row }">{{ CATEGORY_LABEL[row.category as ItemCategory] }}</template>
+        </el-table-column>
+        <el-table-column label="价格类型" width="110">
+          <template #default="{ row }">
+            <el-tag :type="row.isFixedPrice ? 'success' : 'info'" size="small" effect="plain">
+              {{ row.isFixedPrice ? '固定价格' : '按次录入' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="商人收购" min-width="150" align="right">
+          <template #default="{ row }">
+            {{ row.isFixedPrice ? priceText(prices.get(row.id)?.merchantPrice) : '—' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="个人收购" min-width="150" align="right">
+          <template #default="{ row }">
+            {{ row.isFixedPrice ? priceText(prices.get(row.id)?.personalPrice) : '—' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="用户录入价" min-width="150" align="right">
+          <template #default="{ row }">
+            <span :class="{ missing: row.isFixedPrice && !prices.get(row.id)?.userPrice }">
+              {{ row.isFixedPrice ? priceText(prices.get(row.id)?.userPrice) : '—' }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="252">
+          <template #default="{ row }">
+            <el-button
+              v-if="row.isFixedPrice"
+              link
+              type="primary"
+              @click="openPrice(row)"
+            >
+              维护价格
+            </el-button>
+            <el-button link @click="openEdit(row)">编辑</el-button>
+            <el-button link @click="pickIcon(row)">换图标</el-button>
+            <el-button v-if="row.status === 'ENABLED'" link type="danger" @click="disableItem(row)">停用</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
 
     <el-pagination
       v-model:current-page="page"
@@ -430,7 +432,7 @@ h2 {
   color: var(--text-muted);
   font-size: 13px;
 }
-.tbl {
+.tbl-wrap {
   background: var(--surface-card);
   border-radius: var(--radius-card);
   box-shadow: var(--elev-raised);
