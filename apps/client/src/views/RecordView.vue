@@ -831,16 +831,14 @@ onBeforeUnmount(() => {
             <template #title>本次收获</template>
             <template #extra><span class="hint">点右侧物品图标添加</span></template>
           </CardHeader>
-          <div class="gain-grid">
-            <el-empty
-              v-if="!store.session?.details.length"
-              description="还没有记录，点右侧物品图标添加 1 个"
-              :image-size="70"
-            />
+          <div class="gain-list">
+            <div v-if="!store.session?.details.length" class="gain-empty">
+              还没有记录，点右侧物品图标添加
+            </div>
             <div
               v-for="d in store.session?.details"
               :key="d.id"
-              class="gain-cell"
+              class="gain-row"
               :class="{ cost: d.direction === 'COST' }"
               :title="detailTip(d)"
               @click="onEditDetailPrice(d)"
@@ -849,8 +847,18 @@ onBeforeUnmount(() => {
                 <i>{{ (d.itemName ?? '?')[0] }}</i>
                 <img v-if="d.iconUrl" :src="assetUrl(d.iconUrl) ?? ''" :alt="d.itemName ?? ''" loading="lazy" @error="onImgError" />
               </span>
-              <!-- 损耗恒为 1 件，没有数量概念，角标只挂给收获 -->
+              <span class="g-main">
+                <span class="g-name">{{ d.itemName ?? '未知物品' }}</span>
+                <span class="g-sub">
+                  {{ d.direction === 'COST' ? '损耗' : `单价 ${fmt(d.unitPrice)}万` }}
+                  <template v-if="d.source?.name"> · {{ d.source.name }}</template>
+                </span>
+              </span>
+              <!-- 损耗恒为 1 件，没有数量概念 -->
               <span v-if="d.direction !== 'COST'" class="g-qty num">×{{ d.quantity }}</span>
+              <span class="g-sum num" :class="d.direction === 'COST' ? 'down' : 'up'">
+                {{ d.direction === 'COST' ? '-' : '+' }}{{ fmt(Math.abs(d.itemValue)) }}万
+              </span>
               <button class="g-del" title="删除" @click.stop="onDeleteDetail(d)">×</button>
             </div>
           </div>
@@ -1131,12 +1139,12 @@ onBeforeUnmount(() => {
 .right .card {
   flex: 1;
 }
+/* 标题行、分类标签都按内容高度，不参与拉伸（否则会被撑到半张卡片高） */
 .left .card :deep(.card-title),
 .right .card :deep(.card-title),
 .left .card > .cat-tabs,
-.right .card > .cat-tabs,
-.right .card > .quick-grid {
-  flex: 1;
+.right .card > .cat-tabs {
+  flex: 0 0 auto;
 }
 .right {
   min-width: 0;
@@ -1149,56 +1157,80 @@ onBeforeUnmount(() => {
   color: var(--text-muted);
   font-weight: 400;
 }
-/* ---- 本次收获：九宫格 ---- */
-.gain-grid {
+/* ---- 本次收获：一行一件，左图标 + 名称/单价 + 数量 + 小计 ---- */
+.gain-list {
   flex: 1;
   min-height: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
-  align-content: start;
-  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   overflow-y: auto;
-  padding: 4px;
+  padding-right: 4px;
 }
-/* 空状态占满整行，免得被挤进一个格子里 */
-.gain-grid :deep(.el-empty) {
-  grid-column: 1 / -1;
+.gain-empty {
+  padding: 26px 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
 }
-.gain-cell {
-  position: relative;
-  padding: 6px;
+.gain-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
   border-radius: 10px;
   border: 1px solid transparent;
   cursor: pointer;
   transition: background 0.13s, border-color 0.13s;
 }
-.gain-cell:hover {
+.gain-row:hover {
   background: var(--bg-raised);
   border-color: rgb(var(--accent-rgb) / 0.35);
 }
-.gain-cell.cost:hover {
+.gain-row.cost:hover {
   border-color: rgba(242, 103, 91, 0.4);
 }
-/* 图标撑满格子并保持正方形；角标按它定位 */
 .g-icon {
   position: relative;
-  width: 100%;
-  aspect-ratio: 1;
-  border-radius: 10px;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 9px;
   background: linear-gradient(135deg, rgb(var(--accent-rgb) / 0.2), rgb(var(--accent-rgb) / 0.05));
   border: 1px solid rgb(var(--accent-rgb) / 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--accent-400);
   overflow: hidden;
 }
-.gain-cell.cost .g-icon {
+.gain-row.cost .g-icon {
   background: linear-gradient(135deg, rgba(242, 103, 91, 0.2), rgba(242, 103, 91, 0.05));
   border-color: rgba(242, 103, 91, 0.3);
   color: var(--negative);
+}
+.g-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.g-name {
+  font-size: 13px;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.g-sub {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .g-icon i {
   font-style: normal;
@@ -1211,42 +1243,49 @@ onBeforeUnmount(() => {
   object-fit: contain;
   padding: 3px;
 }
-/* 数量角标：压在图标右下角（cell 内缩 6px + 内缩 2px） */
+/* 数量与小计：等宽数字，右对齐成一列 */
 .g-qty {
-  position: absolute;
-  right: 8px;
-  bottom: 8px;
-  padding: 0 5px;
-  border-radius: 7px;
-  font-size: 11px;
-  font-weight: 700;
-  line-height: 16px;
-  color: #fff;
-  background: rgba(58, 46, 38, 0.74);
-  pointer-events: none;
+  flex-shrink: 0;
+  min-width: 34px;
+  text-align: right;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
 }
-/* 删除：压在图标右上角。常驻显示——触屏没有 hover，藏起来就点不到 */
+.g-sum {
+  flex-shrink: 0;
+  min-width: 78px;
+  text-align: right;
+  font-size: 13px;
+  font-weight: 600;
+}
+.g-sum.up {
+  color: var(--accent-400);
+}
+.g-sum.down {
+  color: var(--negative);
+}
+/* 删除：常驻显示——触屏没有 hover，藏起来就点不到 */
 .g-del {
-  position: absolute;
-  right: 8px;
-  top: 8px;
-  width: 18px;
-  height: 18px;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
   padding: 0;
   border: none;
   border-radius: 50%;
-  background: rgba(58, 46, 38, 0.74);
-  color: #fff;
+  background: var(--bg-raised);
+  color: var(--text-muted);
   font-size: 13px;
   line-height: 1;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s;
+  transition: background 0.15s, color 0.15s;
 }
 .g-del:hover {
   background: var(--negative);
+  color: #fff;
 }
 /* ---- 物品点选 ---- */
 .cat-tabs {
@@ -1280,7 +1319,9 @@ onBeforeUnmount(() => {
   flex: 1;
   min-height: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+  /* 固定列宽 + 左对齐：物品少时不会把几个图标摊满整行，多时按行排下去 */
+  grid-template-columns: repeat(auto-fill, 82px);
+  justify-content: start;
   align-content: start;
   gap: 10px;
   overflow-y: auto;
