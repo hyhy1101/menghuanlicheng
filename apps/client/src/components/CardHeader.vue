@@ -20,8 +20,9 @@ defineProps<{ icon?: string }>()
 
 <style scoped>
 .card-title {
-  font-size: 15px;
-  font-weight: 600;
+  /* BoardUI：卡片标题走 headline 一档（16px / semibold），字体与字重成对定义 */
+  font: var(--text-headline);
+  letter-spacing: var(--tracking-normal);
   margin-bottom: 12px;
   display: flex;
   justify-content: space-between;
