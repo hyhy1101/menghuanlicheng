@@ -223,39 +223,112 @@ onMounted(async () => {
   margin-top: 1px;
   white-space: nowrap;
 }
+/*
+ * 顶部导航 = 新拟物键帽
+ *
+ * 三种状态共用一套「左上受光 / 右下投影」的光影：
+ *   静置  外阴影，键帽浮在面板上
+ *   悬停  外阴影加深 + 上浮 1px
+ *   按下  外阴影换内阴影，键帽沉下去 2px；松手用带回弹的缓动弹回
+ * 当前页 (.on) 常驻按下态，底部亮一颗主题色指示灯。
+ *
+ * 光影基色按明暗主题分别取值 —— 新拟物最怕两边都用纯黑纯白，
+ * 亮色底给暖白高光 + 暖棕投影，暗色底给极淡白高光 + 深黑投影。
+ */
 .nav {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 6px;
+  --key-face: color-mix(in srgb, var(--bg-panel) 86%, #ffffff);
+  --key-face-lo: color-mix(in srgb, var(--bg-panel) 94%, #ffffff);
+  --key-light: rgba(255, 255, 255, 0.95);
+  --key-dark: rgba(92, 64, 51, 0.24);
+}
+html.dark .nav {
+  --key-face: color-mix(in srgb, var(--bg-panel) 92%, #ffffff);
+  --key-face-lo: var(--bg-panel);
+  --key-light: rgba(255, 255, 255, 0.06);
+  --key-dark: rgba(0, 0, 0, 0.55);
 }
 .nav-item {
   position: relative;
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 10px;
-  border-radius: 8px;
+  padding: 7px 11px 9px;
+  border-radius: 9px;
   color: var(--text-secondary);
   cursor: pointer;
   font-size: 13px;
   white-space: nowrap;
-  transition: background 0.18s, color 0.18s;
+  user-select: none;
+  background: linear-gradient(145deg, var(--key-face), var(--key-face-lo));
+  box-shadow:
+    -2px -2px 5px var(--key-light),
+    2px 2px 5px var(--key-dark);
+  /* 松手回弹：位移用带回弹的缓动，阴影跟随得稳一些 */
+  transition:
+    transform 0.34s cubic-bezier(0.2, 1.55, 0.4, 1),
+    box-shadow 0.22s ease-out,
+    color 0.18s;
 }
 .nav-item svg {
   flex-shrink: 0;
   opacity: 0.85;
 }
 .nav-item:hover {
-  background: var(--bg-raised);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+  box-shadow:
+    -3px -3px 7px var(--key-light),
+    3px 5px 10px var(--key-dark);
+}
+/* 按下：外阴影收成内阴影，键帽下沉 2px；瞬时响应，回弹交给上面那条 transition */
+.nav-item:active {
+  transform: translateY(2px);
+  box-shadow:
+    inset 2px 2px 5px var(--key-dark),
+    inset -2px -2px 5px var(--key-light);
+  transition-duration: 0.06s;
   color: var(--text-primary);
 }
+/* 当前页：常驻按下态 + 主题色指示灯 */
 .nav-item.on {
-  background: linear-gradient(90deg, rgb(var(--accent-rgb) / 0.16), rgb(var(--accent-rgb) / 0.04));
+  transform: translateY(2px);
   color: var(--accent-400);
   font-weight: 600;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--key-face) 92%, rgb(var(--accent-rgb))),
+    var(--key-face-lo)
+  );
+  box-shadow:
+    inset 2px 2px 5px var(--key-dark),
+    inset -2px -2px 5px var(--key-light);
 }
 .nav-item.on svg {
   opacity: 1;
+}
+.nav-item.on::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 3px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background: var(--accent-500);
+  box-shadow:
+    0 0 5px 1px rgb(var(--accent-rgb) / 0.7),
+    inset 0 0 1px rgba(255, 255, 255, 0.8);
+}
+/* 当前页再被按下：比常驻态再沉一点，反馈不丢 */
+.nav-item.on:active {
+  transform: translateY(3px);
+  box-shadow:
+    inset 3px 3px 7px var(--key-dark),
+    inset -2px -2px 5px var(--key-light);
 }
 .spacer {
   flex: 1;
