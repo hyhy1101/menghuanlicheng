@@ -189,7 +189,9 @@ onBeforeUnmount(() => {
   --ease-modal: cubic-bezier(0.32, 0.72, 0, 1);
 
   /* ===== 品牌 ===== */
-  --accent-rgb: 109, 93, 252;
+  /* 空格分隔（不是逗号）：下面的用法都是 rgb(var(--accent-rgb) / 0.2)，
+     写成逗号会拼出 rgb(109, 93, 252 / 0.2) 这种非法值，整条声明被丢弃。 */
+  --accent-rgb: 109 93 252;
   --accent-400: var(--a-400);
   --accent-500: var(--a-500);
   --accent-600: var(--a-600);
@@ -276,28 +278,28 @@ html.dark {
 
 /* ===== 主题色：换 ramp 即可全站跟随 ===== */
 html[data-accent='violet'] {
-  --accent-rgb: 109, 93, 252;
+  --accent-rgb: 109 93 252;
   --accent-400: #8e80fd;
   --accent-500: #6d5dfc;
   --accent-600: #5a49e8;
   --on-accent: #ffffff;
 }
 html[data-accent='indigo'] {
-  --accent-rgb: 76, 110, 245;
+  --accent-rgb: 76 110 245;
   --accent-400: #7d9aff;
   --accent-500: #4c6ef5;
   --accent-600: #3b57d4;
   --on-accent: #ffffff;
 }
 html[data-accent='teal'] {
-  --accent-rgb: 14, 148, 136;
+  --accent-rgb: 14 148 136;
   --accent-400: #2fb3a7;
   --accent-500: #0e9488;
   --accent-600: #0a7a70;
   --on-accent: #ffffff;
 }
 html[data-accent='rose'] {
-  --accent-rgb: 214, 51, 108;
+  --accent-rgb: 214 51 108;
   --accent-400: #e4638f;
   --accent-500: #d6336c;
   --accent-600: #b7275a;

@@ -73,6 +73,11 @@ function occOf(date: string): ActivityOccurrenceDTO[] {
   return occurrences.value.filter((o) => o.date === date)
 }
 
+/** 每次渲染时取当天，跨零点后不用重启也能对上 */
+function isToday(date: string): boolean {
+  return date === formatLocalDate()
+}
+
 function timeText(o: ActivityOccurrenceDTO): string {
   return `${o.start.slice(11, 16)}–${o.end.slice(11, 16)}${o.endsNextDay ? '（次日）' : ''}`
 }
@@ -250,9 +255,10 @@ onMounted(async () => {
         </div>
 
         <div v-loading="loading" class="timeline">
-          <div v-for="d in weekDays" :key="d.date" class="day-col" :class="{ today: d.date === formatLocalDate() }">
+          <div v-for="d in weekDays" :key="d.date" class="day-col" :class="{ today: isToday(d.date) }">
             <div class="day-head">
               <span class="week">{{ d.week }}</span>
+              <span v-if="isToday(d.date)" class="today-tag">今天</span>
               <span class="date">{{ d.label }}</span>
             </div>
             <div class="day-body">
@@ -427,22 +433,46 @@ h2 {
   box-shadow: var(--elev-inset-sm);
 }
 .day-col.today {
+  /* 今天：从下沉托盘里浮起来，整列染一层淡主题色 + 实心描边 + 主题色投影 */
+  background: color-mix(in srgb, var(--accent-500) 7%, var(--surface-card));
   box-shadow:
-    inset 2px 2px 6px var(--shade),
-    inset -2px -2px 6px var(--glow),
-    0 0 0 2px rgb(var(--accent-rgb) / 0.35);
+    0 0 0 2px var(--accent-500),
+    0 10px 22px -6px rgb(var(--accent-rgb) / 0.45),
+    var(--elev-raised-sm);
 }
 .day-head {
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
+  gap: 6px;
   padding: 10px 12px;
   background: var(--surface-tray);
+}
+.day-col.today .day-head {
+  background: rgb(var(--accent-rgb) / 0.18);
+}
+.day-col.today .week {
+  color: var(--ink-accent);
+}
+.day-col.today .date {
+  color: var(--ink-accent);
+  opacity: 0.85;
+}
+.today-tag {
+  padding: 3px 7px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-500);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  align-self: center;
 }
 .week {
   font-weight: 600;
 }
 .date {
+  margin-left: auto;
   color: var(--text-muted);
   font-size: 12px;
 }
