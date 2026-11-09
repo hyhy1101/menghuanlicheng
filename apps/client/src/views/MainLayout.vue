@@ -1,0 +1,385 @@
+<script setup lang="ts">
+import { computed, onMounted, ref } from 'vue'
+import { RouterView, useRoute, useRouter } from 'vue-router'
+import { useThemeStore } from '../stores/theme'
+import { THEME_ACCENTS } from '../themes'
+import { profileApi } from '../api/basic'
+import { assetUrl } from '../utils/asset'
+
+const route = useRoute()
+const router = useRouter()
+const theme = useThemeStore()
+
+const nickname = ref('玩家')
+const avatar = ref<string | null>(null)
+
+const navs = [
+  { path: '/', label: '主页', icon: 'M3 11.5 12 4l9 7.5M5.5 10v9.5h13V10' },
+  {
+    path: '/records',
+    label: '记录列表',
+    icon: 'M12 8v4l3 2m6-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z'
+  },
+  {
+    path: '/teams',
+    label: '号组',
+    icon: 'M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm8-1a2.5 2.5 0 1 0 0-5M4 19c0-2.5 2.2-4 5-4s5 1.5 5 4m3-5.5c1.7.5 3 1.8 3 3.5'
+  },
+  { path: '/analysis', label: '分析', icon: 'M4 20V10m5.5 10V4m5.5 16v-8m5 8V7' },
+  {
+    path: '/activities',
+    label: '活动',
+    icon: 'M7 3v3m10-3v3M4 8h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm3 7h3v3H8v-3Z'
+  },
+  {
+    path: '/items',
+    label: '物品信息',
+    icon: 'M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Zm0 0 8 4.5m8-4.5L12 12m0 0v9'
+  }
+]
+
+const today = computed(() => {
+  const d = new Date()
+  const week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()]
+  return `${d.getMonth() + 1}月${d.getDate()}日 周${week}`
+})
+
+const initial = computed(() => (nickname.value || '玩')[0])
+
+function goRecord() {
+  void router.push('/record')
+}
+
+function handleUserCommand(command: string) {
+  if (command === 'settings' || command === 'about') void router.push(`/${command}`)
+}
+
+onMounted(async () => {
+  try {
+    const { data } = await profileApi.get()
+    nickname.value = data.data.nickname || '玩家'
+    avatar.value = assetUrl(data.data.avatar)
+  } catch {
+    /* 档案还没建好时用默认昵称 */
+  }
+})
+</script>
+
+<template>
+  <div class="layout">
+    <header class="topbar">
+      <div class="logo">
+        <div class="logo-badge">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round">
+            <path d="M12 2 21 7v10l-9 5-9-5V7l9-5Z" />
+            <path d="M12 2v20M21 7l-9 5M3 7l9 5" />
+          </svg>
+        </div>
+        <div class="logo-text">
+          <div class="logo-name">梦幻里程</div>
+          <div class="logo-sub">Fantasy Ledger</div>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <div
+          v-for="n in navs"
+          :key="n.path"
+          class="nav-item"
+          :class="{ on: route.path === n.path }"
+          @click="router.push(n.path)"
+        >
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path :d="n.icon" />
+          </svg>
+          <span>{{ n.label }}</span>
+        </div>
+      </nav>
+
+      <div class="spacer" />
+
+      <span class="date">{{ today }}</span>
+
+      <el-popover trigger="click" :width="224" popper-class="theme-pop">
+        <template #reference>
+          <button class="theme-btn" title="主题设置">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3a9 9 0 1 0 0 18c1.2 0 2-.8 2-2 0-.6-.3-1-.6-1.4-.3-.4-.5-.8-.5-1.3 0-.9.7-1.5 1.6-1.5H16a5 5 0 0 0 5-5c0-3.9-4-7-9-7.8Zm-6 9a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4Zm3.5-3.5a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4Zm4.5 0a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4Z" />
+            </svg>
+          </button>
+        </template>
+        <div class="theme-panel">
+          <div class="theme-row">
+            <span class="theme-label">显示模式</span>
+            <el-switch
+              :model-value="theme.mode === 'light'"
+              inline-prompt
+              active-text="亮"
+              inactive-text="暗"
+              @change="theme.toggleMode()"
+            />
+          </div>
+          <div class="theme-row">
+            <span class="theme-label">主题色</span>
+            <div class="swatches">
+              <button
+                v-for="t in THEME_ACCENTS"
+                :key="t.id"
+                class="swatch"
+                :class="{ on: theme.accent === t.id }"
+                :style="{ background: `linear-gradient(135deg, ${t.colors[0]}, ${t.colors[2]})` }"
+                :title="t.name"
+                @click="theme.setAccent(t.id)"
+              />
+            </div>
+          </div>
+        </div>
+      </el-popover>
+
+      <el-button type="primary" class="btn-record" @click="goRecord">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <path d="M12 5v14M5 12h14" />
+        </svg>
+        开始里程
+      </el-button>
+
+      <el-dropdown trigger="click" @command="handleUserCommand">
+        <div class="user-box" tabindex="0">
+          <el-avatar :size="30" class="avatar" :src="avatar ?? undefined">{{ initial }}</el-avatar>
+          <span class="user-name">{{ nickname }}</span>
+          <svg class="caret" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+        </div>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item command="settings">设置</el-dropdown-item>
+            <el-dropdown-item command="about">关于 / 备份</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </header>
+
+    <main class="content">
+      <RouterView />
+    </main>
+  </div>
+</template>
+
+<style scoped>
+.layout {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+}
+.topbar {
+  flex-shrink: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg-panel) 85%, transparent);
+  backdrop-filter: blur(8px);
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 100%;
+  padding-right: 14px;
+  border-right: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.logo-badge {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-500);
+  background: linear-gradient(135deg, rgb(var(--accent-rgb) / 0.22), rgb(var(--accent-rgb) / 0.05));
+  border: 1px solid rgb(var(--accent-rgb) / 0.35);
+  box-shadow: 0 0 18px rgb(var(--accent-rgb) / 0.18);
+}
+.logo-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: var(--serif-font);
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+.logo-sub {
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin-top: 1px;
+  white-space: nowrap;
+}
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 13px;
+  white-space: nowrap;
+  transition: background 0.18s, color 0.18s;
+}
+.nav-item svg {
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+.nav-item:hover {
+  background: var(--bg-raised);
+  color: var(--text-primary);
+}
+.nav-item.on {
+  background: linear-gradient(90deg, rgb(var(--accent-rgb) / 0.16), rgb(var(--accent-rgb) / 0.04));
+  color: var(--accent-400);
+  font-weight: 600;
+}
+.nav-item.on svg {
+  opacity: 1;
+}
+.spacer {
+  flex: 1;
+}
+.date {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.btn-record {
+  height: 36px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 9px;
+  background: linear-gradient(180deg, var(--accent-500), var(--accent-600));
+  border: none;
+  color: var(--on-accent);
+  box-shadow: 0 2px 12px rgb(var(--accent-rgb) / 0.3);
+}
+.btn-record:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 18px rgb(var(--accent-rgb) / 0.4);
+  background: var(--btn-accent-bg);
+  color: var(--on-accent);
+}
+.user-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px 4px 5px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.18s;
+}
+.user-box:hover {
+  border-color: var(--border-strong);
+}
+.avatar {
+  flex-shrink: 0;
+  background: linear-gradient(135deg, var(--accent-500), var(--accent-600)) !important;
+  color: var(--on-accent) !important;
+  font-weight: 700;
+  font-size: 13px;
+  box-shadow: 0 0 0 2px rgb(var(--accent-rgb) / 0.25);
+}
+.user-name {
+  font-size: 13px;
+  color: var(--text-primary);
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.caret {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.theme-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.18s, color 0.18s;
+}
+.theme-btn:hover {
+  border-color: var(--border-strong);
+  color: var(--accent-400);
+}
+.theme-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 4px 2px;
+}
+.theme-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.theme-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+.swatches {
+  display: flex;
+  gap: 8px;
+}
+.swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.swatch:hover {
+  transform: scale(1.12);
+}
+.swatch.on {
+  border-color: var(--text-primary);
+  box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / 0.3);
+}
+.content {
+  flex: 1;
+  overflow: auto;
+  padding: 24px 28px;
+}
+</style>

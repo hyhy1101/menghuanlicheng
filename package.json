@@ -1,0 +1,28 @@
+{
+  "name": "lcb-offline",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.24.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @lc/client --filter @lc/desktop run dev",
+    "build": "pnpm --filter @lc/client run build && pnpm --filter @lc/desktop run build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint . --max-warnings 0",
+    "format": "prettier --write .",
+    "pack:win": "pnpm build && pnpm --filter @lc/desktop run pack:win"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.30.0",
+    "eslint": "^9.30.0",
+    "eslint-config-prettier": "^10.1.0",
+    "eslint-plugin-vue": "^10.1.0",
+    "prettier": "^3.6.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.36.0",
+    "vue-eslint-parser": "^10.1.0"
+  }
+}

@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>梦幻里程</title>
+    <!--
+      单机版：渲染层不访问网络。
+      - app-img 是主进程注册的自定义图片协议（内置图标 / 用户上传图）
+      - connect-src 'self' 只为开发态的 Vite HMR 保留，打包后没有任何远程请求
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: app-img:; font-src 'self' data:; connect-src 'self'"
+    />
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

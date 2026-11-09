@@ -1,0 +1,72 @@
+{
+  "name": "@lc/desktop",
+  "productName": "梦幻里程",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "梦幻里程 - 单机离线版桌面客户端",
+  "author": "Fantasy Ledger Team",
+  "main": "dist/main.cjs",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit",
+    "pack:win": "node scripts/pack.mjs"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.15.15"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "electron": "^37.0.0",
+    "electron-builder": "^26.15.3",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.8.3",
+    "@lc/core": "workspace:*",
+    "@lc/shared": "workspace:*"
+  },
+  "build": {
+    "appId": "com.menghuanlicheng.ledger",
+    "productName": "梦幻里程",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "package.json",
+      {
+        "from": "../client/dist",
+        "to": "renderer"
+      }
+    ],
+    "asar": true,
+    "asarUnpack": [
+      "**/node_modules/@libsql/**"
+    ],
+    "npmRebuild": false,
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "梦幻里程-${version}-setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "梦幻里程"
+    },
+    "electronLanguages": [
+      "zh-CN",
+      "en-US"
+    ],
+    "electronDist": "node_modules/electron/dist",
+    "icon": "build/icon.png"
+  }
+}

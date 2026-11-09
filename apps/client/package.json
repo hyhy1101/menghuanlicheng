@@ -1,0 +1,28 @@
+{
+  "name": "@lc/client",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "梦幻里程 - 游戏收益追踪桌面客户端（单机离线版）",
+  "author": "Fantasy Ledger Team",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "typecheck": "vue-tsc --noEmit",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@lc/shared": "workspace:*",
+    "echarts": "^5.6.0",
+    "element-plus": "^2.14.3",
+    "pinia": "^3.0.0",
+    "vue": "^3.5.17",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.0",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "vue-tsc": "^2.2.0"
+  }
+}

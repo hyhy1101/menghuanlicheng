@@ -1,0 +1,9 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+
+# pnpm 11 的构建脚本白名单：只放行真正需要下载/编译二进制的包
+allowBuilds:
+  electron: true
+  esbuild: true
+  electron-winstaller: false

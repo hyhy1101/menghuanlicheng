@@ -1,0 +1,38 @@
+# ---- 依赖 / 构建产物 ----
+node_modules/
+dist/
+release/
+out/
+.cache/
+*.log
+*.tsbuildinfo
+.DS_Store
+
+# ---- 数据与导出：绝不入仓（真实用户数据只存在于本机） ----
+sql/
+data/
+backups/
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.sql
+*.dump
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+*.sqlite-wal
+*.sqlite-shm
+.env
+.env.*
+!.env.example
+
+# ---- 本地临时文件 ----
+_tmp/
+
+# ---- 用户上传（本地运行时生成） ----
+apps/client/public/user/
+apps/client/public/items/.tmp/
+!apps/client/public/items/*.png
