@@ -1054,7 +1054,7 @@ onBeforeUnmount(() => {
   font-size: 13px;
 }
 .ctx-tag {
-  color: var(--accent-400);
+  color: var(--ink-accent);
   font-weight: 600;
   padding: 3px 10px;
   border-radius: 20px;
@@ -1070,13 +1070,13 @@ onBeforeUnmount(() => {
   gap: 8px;
   padding: 7px 16px;
   border-radius: 20px;
-  border: 1px solid rgba(61, 214, 140, 0.3);
-  background: rgba(61, 214, 140, 0.07);
+  border: 1px solid rgb(var(--positive-rgb) / 0.36);
+  background: rgb(var(--positive-rgb) / 0.1);
   color: var(--positive);
 }
 .timer-box.paused {
-  border-color: rgba(245, 166, 35, 0.35);
-  background: rgba(245, 166, 35, 0.08);
+  border-color: rgb(var(--warning-rgb) / 0.4);
+  background: rgb(var(--warning-rgb) / 0.12);
   color: var(--warning);
 }
 .timer-dot {
@@ -1096,7 +1096,7 @@ onBeforeUnmount(() => {
 }
 .timer-value {
   font-size: 22px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 1px;
   min-width: 96px;
   text-align: center;
@@ -1112,8 +1112,8 @@ onBeforeUnmount(() => {
   overflow: hidden;
 }
 .card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: var(--surface-card);
+  border: 0;
   border-radius: var(--radius-card);
   padding: 18px;
   margin-bottom: 16px;
@@ -1188,7 +1188,7 @@ onBeforeUnmount(() => {
   border-color: rgb(var(--accent-rgb) / 0.35);
 }
 .gain-row.cost:hover {
-  border-color: rgba(242, 103, 91, 0.4);
+  border-color: rgb(var(--negative-rgb) / 0.45);
 }
 .g-icon {
   position: relative;
@@ -1202,13 +1202,13 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   font-size: 14px;
-  font-weight: 700;
-  color: var(--accent-400);
+  font-weight: 600;
+  color: var(--ink-accent);
   overflow: hidden;
 }
 .gain-row.cost .g-icon {
-  background: linear-gradient(135deg, rgba(242, 103, 91, 0.2), rgba(242, 103, 91, 0.05));
-  border-color: rgba(242, 103, 91, 0.3);
+  background: linear-gradient(135deg, rgb(var(--negative-rgb) / 0.2), rgb(var(--negative-rgb) / 0.06));
+  border-color: rgb(var(--negative-rgb) / 0.36);
   color: var(--negative);
 }
 .g-main {
@@ -1260,7 +1260,7 @@ onBeforeUnmount(() => {
   font-weight: 600;
 }
 .g-sum.up {
-  color: var(--accent-400);
+  color: var(--ink-accent);
 }
 .g-sum.down {
   color: var(--negative);
@@ -1307,7 +1307,7 @@ onBeforeUnmount(() => {
 }
 .cat-tab:hover {
   border-color: rgb(var(--accent-rgb) / 0.4);
-  color: var(--accent-400);
+  color: var(--ink-accent);
 }
 .cat-tab.on {
   background: linear-gradient(180deg, var(--accent-500), var(--accent-600));
@@ -1355,8 +1355,8 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   font-size: 15px;
-  font-weight: 700;
-  color: var(--accent-400);
+  font-weight: 600;
+  color: var(--ink-accent);
   overflow: hidden;
 }
 .grid-icon i {
@@ -1442,7 +1442,7 @@ onBeforeUnmount(() => {
 }
 .net-value {
   font-size: 34px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.5px;
   line-height: 1.2;
 }
@@ -1480,14 +1480,14 @@ onBeforeUnmount(() => {
   cursor: pointer;
 }
 .stat-row.clickable:hover {
-  color: var(--accent-400);
+  color: var(--ink-accent);
 }
 .stat-row.cost span:last-child {
   color: var(--negative);
 }
 .stat-row.income span:last-child {
   color: var(--accent-500);
-  font-weight: 700;
+  font-weight: 600;
 }
 .spacer {
   flex: 1;
@@ -1497,18 +1497,22 @@ onBeforeUnmount(() => {
   height: 42px;
   padding: 0 18px;
   border-radius: var(--radius-control);
-  border: 1px solid var(--border);
-  background: var(--bg-raised);
+  border: 0;
+  background: var(--surface-card);
   color: var(--text-secondary);
-  font-weight: 600;
+  font-weight: 500;
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  box-shadow: var(--elev-raised-xs);
+  transition: box-shadow var(--dur-3) var(--ease-out), color var(--dur-2) ease;
 }
 .btn-ghost:hover {
-  border-color: var(--border-strong);
   color: var(--text-primary);
-  background: var(--bg-raised);
+  box-shadow: var(--elev-hover);
+}
+.btn-ghost:active {
+  box-shadow: var(--elev-pressed);
 }
 /* 结束并保存：现在是页头主操作，尺寸对齐同排的 .btn-ghost */
 .btn-end {
@@ -1517,7 +1521,7 @@ onBeforeUnmount(() => {
   padding: 0 22px;
   border-radius: var(--radius-control);
   border: none;
-  font-weight: 700;
+  font-weight: 600;
   background: linear-gradient(180deg, var(--accent-500), var(--accent-600));
   color: var(--on-accent);
   box-shadow: 0 4px 18px rgb(var(--accent-rgb) / 0.4);
@@ -1568,7 +1572,7 @@ onBeforeUnmount(() => {
 }
 .start-title {
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.3px;
 }
 .start-sub {
@@ -1630,7 +1634,7 @@ onBeforeUnmount(() => {
   border: none;
   border-radius: var(--radius-control);
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   background: linear-gradient(180deg, var(--accent-500), var(--accent-600));
   color: var(--on-accent);
   display: inline-flex;
@@ -1671,14 +1675,14 @@ onBeforeUnmount(() => {
 }
 .btn-activity:hover {
   border-color: rgb(var(--accent-rgb) / 0.65);
-  color: var(--accent-400);
+  color: var(--ink-accent);
   background: rgb(var(--accent-rgb) / 0.12);
 }
 .btn-activity.on {
   border-style: solid;
   border-color: rgb(var(--accent-rgb) / 0.55);
   background: rgb(var(--accent-rgb) / 0.14);
-  color: var(--accent-400);
+  color: var(--ink-accent);
 }
 .activity-search {
   margin-bottom: 10px;
@@ -1702,21 +1706,22 @@ onBeforeUnmount(() => {
 .af-chip {
   padding: 4px 12px;
   border-radius: 999px;
-  border: 1px solid var(--border-strong);
-  background: var(--bg-card);
+  border: 0;
+  background: var(--surface-card);
   color: var(--text-muted);
   font-size: 12px;
   cursor: pointer;
-  transition: border-color 0.13s, color 0.13s, background 0.13s;
-  font: inherit;
+  font-family: inherit;
+  box-shadow: var(--elev-raised-xs);
+  transition: box-shadow var(--dur-3) var(--ease-out), color var(--dur-2) ease;
 }
 .af-chip:hover {
-  color: var(--accent-400);
+  color: var(--accent-600);
+  box-shadow: var(--elev-hover);
 }
 .af-chip.on {
-  color: var(--accent-400);
-  border-color: rgb(var(--accent-rgb) / 0.5);
-  background: rgb(var(--accent-rgb) / 0.1);
+  color: var(--accent-600);
+  box-shadow: var(--elev-pressed);
 }
 .activity-list {
   display: flex;
@@ -1731,38 +1736,37 @@ onBeforeUnmount(() => {
   gap: 12px;
   width: 100%;
   padding: 12px 14px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--bg-card);
+  border-radius: 14px;
+  border: 0;
+  background: var(--surface-card);
   color: inherit;
   text-align: left;
   cursor: pointer;
-  transition: background 0.13s, border-color 0.13s;
-  font: inherit;
+  box-shadow: var(--elev-raised-xs);
+  transition: box-shadow var(--dur-3) var(--ease-out);
+  font-family: inherit;
 }
 .activity-row:hover {
-  background: var(--bg-raised);
+  box-shadow: var(--elev-hover);
 }
 .activity-row.on {
-  border-color: rgb(var(--accent-rgb) / 0.55);
-  background: rgb(var(--accent-rgb) / 0.1);
+  box-shadow: var(--elev-pressed);
 }
 .a-badge {
   flex-shrink: 0;
   min-width: 44px;
   text-align: center;
   padding: 3px 8px;
-  border-radius: 6px;
+  border-radius: 999px;
   font-size: 11px;
-  font-weight: 700;
-  color: var(--accent-400);
-  border: 1px solid rgb(var(--accent-rgb) / 0.4);
-  background: rgb(var(--accent-rgb) / 0.1);
+  font-weight: 600;
+  color: var(--accent-600);
+  border: 0;
+  background: rgb(var(--accent-rgb) / 0.12);
 }
 .a-badge.none {
   color: var(--text-muted);
-  border-color: var(--border-strong);
-  background: var(--bg-raised);
+  background: rgb(61 68 81 / 0.06);
 }
 .a-name {
   flex: 1;

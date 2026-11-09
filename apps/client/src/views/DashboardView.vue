@@ -210,15 +210,15 @@ onMounted(async () => {
   gap: 16px;
 }
 .card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: var(--surface-card);
+  border: 0;
   border-radius: var(--radius-card);
   padding: 18px;
-  box-shadow: var(--card-shadow);
-  transition: box-shadow 0.2s, border-color 0.2s;
+  box-shadow: var(--elev-raised);
+  transition: box-shadow var(--dur-3) var(--ease-out);
 }
 .card:hover {
-  border-color: var(--border-strong);
+  box-shadow: var(--elev-hover);
 }
 .hint {
   font-size: 12px;
@@ -234,18 +234,20 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: rgb(var(--accent-rgb) / 0.1);
-  border: 1px solid rgb(var(--accent-rgb) / 0.25);
+  padding: 11px 14px;
+  border-radius: 14px;
+  background: var(--surface-card);
+  box-shadow: var(--elev-inset-sm);
   margin-bottom: 10px;
 }
 .next-label {
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
   color: var(--accent-600);
 }
 .next-name {
-  font-weight: 700;
+  font-weight: 600;
 }
 .next-time {
   margin-left: auto;
@@ -256,16 +258,21 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 9px;
-  padding: 9px 10px;
-  border-radius: 8px;
+  padding: 9px 12px;
+  border-radius: 12px;
   cursor: pointer;
   color: var(--text-secondary);
   font-size: 13px;
-  transition: background 0.15s, color 0.15s;
+  box-shadow: var(--elev-raised-xs);
+  margin-bottom: 6px;
+  transition: box-shadow var(--dur-3) var(--ease-out), color 0.15s;
 }
 .activity:hover {
-  background: var(--bg-raised);
-  color: var(--accent-400);
+  box-shadow: var(--elev-hover);
+  color: var(--accent-600);
+}
+.activity:active {
+  box-shadow: var(--elev-pressed);
 }
 .a-name {
   flex: 1;
@@ -280,7 +287,6 @@ onMounted(async () => {
   flex-shrink: 0;
   border-radius: 50%;
   background: var(--accent-500);
-  box-shadow: 0 0 6px rgb(var(--accent-rgb) / 0.7);
 }
 .activity-hint {
   margin-top: auto;
@@ -288,18 +294,6 @@ onMounted(async () => {
 }
 .overview {
   position: relative;
-  overflow: hidden;
-}
-.overview::after {
-  content: '';
-  position: absolute;
-  right: -70px;
-  top: -70px;
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgb(var(--accent-rgb) / 0.1), transparent 70%);
-  pointer-events: none;
 }
 .live-tag {
   display: inline-flex;
@@ -308,10 +302,9 @@ onMounted(async () => {
   font-size: 12px;
   font-weight: 400;
   color: var(--positive);
-  padding: 3px 10px;
-  border-radius: 20px;
-  border: 1px solid rgb(var(--accent-rgb) / 0.35);
-  background: rgb(var(--accent-rgb) / 0.08);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  background: rgb(var(--positive-rgb) / 0.14);
 }
 .live-dot {
   width: 7px;
@@ -335,7 +328,7 @@ onMounted(async () => {
 .hero-value {
   font-size: 40px;
   line-height: 1.15;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.5px;
 }
 .hero-value .unit {
@@ -344,8 +337,7 @@ onMounted(async () => {
   margin-left: 3px;
 }
 .hero-value.up {
-  color: var(--accent-500);
-  text-shadow: 0 0 24px rgb(var(--accent-rgb) / 0.35);
+  color: var(--ink-1);
 }
 .hero-value.down {
   color: var(--negative);
@@ -357,20 +349,17 @@ onMounted(async () => {
   margin-bottom: 14px;
 }
 .stat {
-  background: var(--bg-raised);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 10px 12px;
+  background: var(--surface-card);
+  border: 0;
+  border-radius: 14px;
+  padding: 11px 13px;
   display: flex;
   flex-direction: column;
   gap: 5px;
-  transition: border-color 0.15s;
-}
-.stat:hover {
-  border-color: rgb(var(--accent-rgb) / 0.3);
+  box-shadow: var(--elev-inset-sm);
 }
 .stat span {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-muted);
 }
 .stat b {
@@ -389,17 +378,17 @@ onMounted(async () => {
   justify-content: center;
   gap: 8px;
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
   border: none;
-  border-radius: 11px;
-  background: linear-gradient(180deg, var(--accent-500), var(--accent-600));
+  border-radius: var(--radius-control);
+  background: var(--accent-500);
   color: var(--on-accent);
-  box-shadow: 0 4px 20px rgb(var(--accent-rgb) / 0.35);
+  box-shadow: 0 4px 16px rgb(var(--accent-rgb) / 0.32);
 }
 .start-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 26px rgb(var(--accent-rgb) / 0.45);
-  background: var(--btn-accent-bg);
+  box-shadow: 0 6px 22px rgb(var(--accent-rgb) / 0.4);
+  background: var(--accent-500);
   color: var(--on-accent);
 }
 .rec-pulse {
@@ -410,14 +399,8 @@ onMounted(async () => {
   animation: breathe 1.2s infinite;
 }
 .cycle-seg {
-  --el-segmented-bg-color: var(--bg-input);
-  --el-segmented-item-selected-bg-color: var(--accent-500);
-  --el-segmented-item-selected-color: var(--on-accent);
-  --el-segmented-item-hover-bg-color: var(--bg-raised);
-  --el-segmented-item-color: var(--text-muted);
-  --el-segmented-item-hover-color: var(--text-primary);
-  border: 1px solid var(--border);
-  border-radius: 9px;
+  border: 0;
+  border-radius: var(--radius-control);
   padding: 3px;
 }
 .cycle-seg :deep(.el-segmented__item) {
@@ -433,23 +416,28 @@ onMounted(async () => {
 .quick {
   height: 84px;
   margin: 0;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: linear-gradient(180deg, var(--bg-raised), var(--bg-card));
+  border-radius: var(--radius-control);
+  border: 0;
+  background: var(--surface-card);
   color: var(--text-secondary);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 4px;
-  transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
+  box-shadow: var(--elev-raised-sm);
+  transition:
+    box-shadow var(--dur-3) var(--ease-out),
+    transform var(--dur-3) var(--ease-out);
 }
 .quick:hover {
-  border-color: rgb(var(--accent-rgb) / 0.45);
   transform: translateY(-2px);
-  box-shadow: var(--card-shadow-hover);
-  background: linear-gradient(180deg, var(--bg-raised), var(--bg-card));
+  box-shadow: var(--elev-raised);
   color: var(--text-secondary);
+}
+.quick:active {
+  transform: translateY(0);
+  box-shadow: var(--elev-pressed);
 }
 .quick-name {
   font-size: 14px;

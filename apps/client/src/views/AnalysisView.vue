@@ -285,22 +285,21 @@ onMounted(() => {
   color: var(--text-muted);
 }
 .ana-tabs :deep(.el-tabs__item.is-active) {
-  color: var(--accent-400);
+  color: var(--accent-600);
   font-weight: 600;
 }
 .ana-tabs :deep(.el-tabs__active-bar) {
-  background: linear-gradient(90deg, var(--accent-400), var(--accent-600));
-  box-shadow: 0 0 8px rgb(var(--accent-rgb) / 0.5);
+  background: var(--accent-500);
   height: 2px;
   border-radius: 2px;
 }
 .ana-tabs :deep(.el-tabs__nav-wrap::after) {
   height: 1px;
-  background-color: var(--border);
+  background-color: var(--line-separator);
 }
 .card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: var(--surface-card);
+  border: 0;
   border-radius: var(--radius-card);
   padding: 18px;
   box-shadow: var(--card-shadow);
@@ -312,20 +311,14 @@ onMounted(() => {
   margin-left: 4px;
 }
 .range-seg {
-  --el-segmented-bg-color: var(--bg-input);
-  --el-segmented-item-selected-bg-color: var(--accent-500);
-  --el-segmented-item-selected-color: var(--on-accent);
-  --el-segmented-item-hover-bg-color: var(--bg-raised);
-  --el-segmented-item-color: var(--text-muted);
-  --el-segmented-item-hover-color: var(--text-primary);
-  border: 1px solid var(--border);
-  border-radius: 9px;
+  border: 0;
+  border-radius: var(--radius-control);
   padding: 3px;
 }
 .range-seg :deep(.el-segmented__item) {
   font-size: 12.5px;
   padding: 5px 13px;
-  border-radius: 7px;
+  border-radius: 11px;
 }
 /* el-table 暗色适配 */
 .lc-table {
@@ -333,7 +326,7 @@ onMounted(() => {
   --el-table-tr-bg-color: transparent;
   --el-table-header-bg-color: transparent;
   --el-table-row-hover-bg-color: var(--el-fill-color-light);
-  --el-table-border-color: var(--border);
+  --el-table-border-color: var(--line-separator);
   --el-table-header-text-color: var(--text-muted);
   --el-table-text-color: var(--text-primary);
   font-size: 13px;
@@ -349,17 +342,16 @@ onMounted(() => {
   justify-content: center;
   width: 22px;
   height: 22px;
-  border-radius: 6px;
+  border-radius: 7px;
   font-size: 11px;
-  font-weight: 700;
-  background: var(--bg-raised);
+  font-weight: 600;
+  background: var(--surface-card);
   color: var(--text-muted);
-  border: 1px solid var(--border);
+  box-shadow: var(--elev-raised-xs);
 }
 .rank.top {
-  background: linear-gradient(135deg, var(--accent-500), var(--accent-600));
+  background: var(--accent-500);
   color: var(--on-accent);
-  border-color: transparent;
 }
 .src-name {
   font-weight: 600;
@@ -384,24 +376,21 @@ onMounted(() => {
 }
 /* el-tag 语义色 */
 .type-tag {
-  --el-tag-bg-color: var(--bg-raised);
-  --el-tag-border-color: var(--border);
+  --el-tag-bg-color: var(--surface-sunken);
+  --el-tag-border-color: transparent;
   --el-tag-text-color: var(--text-secondary);
-  border-radius: 20px;
+  border-radius: var(--radius-pill);
 }
 .type-tag.dungeon {
-  --el-tag-bg-color: color-mix(in srgb, var(--info) 12%, transparent);
-  --el-tag-border-color: color-mix(in srgb, var(--info) 38%, transparent);
+  --el-tag-bg-color: rgb(var(--info-rgb) / 0.12);
   --el-tag-text-color: var(--info);
 }
 .type-tag.activity {
   --el-tag-bg-color: rgb(var(--accent-rgb) / 0.1);
-  --el-tag-border-color: rgb(var(--accent-rgb) / 0.35);
-  --el-tag-text-color: var(--accent-400);
+  --el-tag-text-color: var(--accent-600);
 }
 .type-tag.daily {
-  --el-tag-bg-color: rgba(61, 214, 140, 0.1);
-  --el-tag-border-color: rgba(61, 214, 140, 0.35);
+  --el-tag-bg-color: rgb(var(--positive-rgb) / 0.14);
   --el-tag-text-color: var(--positive);
 }
 </style>

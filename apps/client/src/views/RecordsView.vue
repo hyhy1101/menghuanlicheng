@@ -357,8 +357,8 @@ onMounted(presetToday)
   gap: 16px;
 }
 .card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: var(--surface-card);
+  border: 0;
   border-radius: var(--radius-card);
   padding: 18px;
   box-shadow: var(--card-shadow);
@@ -407,7 +407,7 @@ onMounted(presetToday)
   --el-table-tr-bg-color: transparent;
   --el-table-header-bg-color: transparent;
   --el-table-row-hover-bg-color: var(--el-fill-color-light);
-  --el-table-border-color: var(--border);
+  --el-table-border-color: var(--line-separator);
   --el-table-header-text-color: var(--text-muted);
   --el-table-text-color: var(--text-primary);
   font-size: 13px;
@@ -462,7 +462,7 @@ onMounted(presetToday)
   gap: 12px;
   margin-bottom: 14px;
   padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--line-separator);
 }
 .head-main {
   display: flex;
@@ -471,7 +471,7 @@ onMounted(presetToday)
 }
 .head-date {
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
 }
 .head-time {
   font-size: 12.5px;
@@ -490,13 +490,14 @@ onMounted(presetToday)
   margin-bottom: 10px;
 }
 .t-item {
-  background: var(--bg-raised);
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  padding: 8px 10px;
+  background: var(--surface-card);
+  border: 0;
+  border-radius: 12px;
+  padding: 9px 11px;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  box-shadow: var(--elev-inset-sm);
 }
 .t-item span {
   font-size: 11px;
@@ -506,7 +507,8 @@ onMounted(presetToday)
   font-size: 13.5px;
 }
 .t-item.net {
-  border-color: rgb(var(--accent-rgb) / 0.3);
+  box-shadow: inset 2px 2px 5px var(--shade), inset -2px -2px 5px var(--glow),
+    0 0 0 1.5px rgb(var(--accent-rgb) / 0.35);
 }
 .detail-extra {
   display: flex;

@@ -174,51 +174,53 @@ onMounted(async () => {
   position: relative;
   z-index: 1;
 }
+/* 顶栏与页面同色，用一条向下的柔和投影把自己「抬」起来，不用描边 */
 .topbar {
   flex-shrink: 0;
-  height: 60px;
+  height: 64px;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0 18px;
-  border-bottom: 1px solid var(--border);
-  background: color-mix(in srgb, var(--bg-panel) 85%, transparent);
-  backdrop-filter: blur(8px);
+  padding: 0 20px;
+  background: var(--surface-page);
+  box-shadow: 0 8px 16px -12px var(--shade);
+  position: relative;
+  z-index: 2;
 }
 .logo {
   display: flex;
   align-items: center;
   gap: 10px;
   height: 100%;
-  padding-right: 14px;
-  border-right: 1px solid var(--border);
+  padding-right: 18px;
+  margin-right: 4px;
   flex-shrink: 0;
 }
+/* 标志也做成一枚凸起的键帽，只有图标本身用品牌色 */
 .logo-badge {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   flex-shrink: 0;
-  border-radius: 9px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--accent-500);
-  background: linear-gradient(135deg, rgb(var(--accent-rgb) / 0.22), rgb(var(--accent-rgb) / 0.05));
-  border: 1px solid rgb(var(--accent-rgb) / 0.35);
-  box-shadow: 0 0 18px rgb(var(--accent-rgb) / 0.18);
+  background: var(--surface-card);
+  box-shadow: var(--elev-raised-sm);
 }
 .logo-name {
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-primary);
-  font-family: var(--serif-font);
-  letter-spacing: 0.5px;
+  font-family: var(--sans-font);
+  letter-spacing: var(--tracking-tight);
   white-space: nowrap;
 }
 .logo-sub {
   font-size: 9px;
   color: var(--text-muted);
-  letter-spacing: 0.8px;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   margin-top: 1px;
   white-space: nowrap;
@@ -239,30 +241,24 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 6px;
-  --key-face: color-mix(in srgb, var(--bg-panel) 86%, #ffffff);
-  --key-face-lo: color-mix(in srgb, var(--bg-panel) 94%, #ffffff);
-  --key-light: rgba(255, 255, 255, 0.95);
-  --key-dark: rgba(92, 64, 51, 0.24);
-}
-html.dark .nav {
-  --key-face: color-mix(in srgb, var(--bg-panel) 92%, #ffffff);
-  --key-face-lo: var(--bg-panel);
-  --key-light: rgba(255, 255, 255, 0.06);
-  --key-dark: rgba(0, 0, 0, 0.55);
+  /* 键帽与底色同色，光影直接用全局的 shade / glow */
+  --key-light: var(--glow);
+  --key-dark: var(--shade);
 }
 .nav-item {
   position: relative;
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 11px 9px;
-  border-radius: 9px;
+  padding: 8px 12px 10px;
+  border-radius: var(--radius-control);
   color: var(--text-secondary);
   cursor: pointer;
   font-size: 13px;
+  font-weight: 500;
   white-space: nowrap;
   user-select: none;
-  background: linear-gradient(145deg, var(--key-face), var(--key-face-lo));
+  background: var(--surface-card);
   box-shadow:
     -2px -2px 5px var(--key-light),
     2px 2px 5px var(--key-dark);
@@ -276,6 +272,7 @@ html.dark .nav {
   flex-shrink: 0;
   opacity: 0.85;
 }
+/* 悬停：模糊减半 + 上浮 1px，模拟手靠近遮光 */
 .nav-item:hover {
   color: var(--text-primary);
   transform: translateY(-1px);
@@ -292,19 +289,17 @@ html.dark .nav {
   transition-duration: 0.06s;
   color: var(--text-primary);
 }
-/* 当前页：常驻按下态 + 主题色指示灯 */
+/* 当前页：常驻按下态 + 主题色指示灯（不换底色） */
 .nav-item.on {
   transform: translateY(2px);
-  color: var(--accent-400);
+  color: var(--accent-600);
   font-weight: 600;
-  background: linear-gradient(
-    145deg,
-    color-mix(in srgb, var(--key-face) 92%, rgb(var(--accent-rgb))),
-    var(--key-face-lo)
-  );
   box-shadow:
     inset 2px 2px 5px var(--key-dark),
     inset -2px -2px 5px var(--key-light);
+}
+html.dark .nav-item.on {
+  color: var(--ink-accent);
 }
 .nav-item.on svg {
   opacity: 1;
@@ -313,15 +308,13 @@ html.dark .nav {
   content: '';
   position: absolute;
   left: 50%;
-  bottom: 3px;
+  bottom: 4px;
   width: 4px;
   height: 4px;
   border-radius: 50%;
   transform: translateX(-50%);
   background: var(--accent-500);
-  box-shadow:
-    0 0 5px 1px rgb(var(--accent-rgb) / 0.7),
-    inset 0 0 1px rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 6px 1px rgb(var(--accent-rgb) / 0.6);
 }
 /* 当前页再被按下：比常驻态再沉一点，反馈不丢 */
 .nav-item.on:active {
@@ -339,48 +332,57 @@ html.dark .nav {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
+/* 主行动：唯一一块压在基底上的饱和色，配一层品牌色辉光 */
 .btn-record {
-  height: 36px;
-  padding: 0 16px;
+  height: 38px;
+  padding: 0 18px;
   display: inline-flex;
   align-items: center;
   gap: 7px;
   font-size: 14px;
-  font-weight: 700;
-  border-radius: 9px;
-  background: linear-gradient(180deg, var(--accent-500), var(--accent-600));
+  font-weight: 600;
+  border-radius: var(--radius-control);
+  background: var(--accent-500);
   border: none;
   color: var(--on-accent);
-  box-shadow: 0 2px 12px rgb(var(--accent-rgb) / 0.3);
+  box-shadow: 0 3px 12px rgb(var(--accent-rgb) / 0.3);
+  transition:
+    box-shadow var(--dur-3) var(--ease-out),
+    background-color var(--dur-2) ease;
 }
 .btn-record:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 18px rgb(var(--accent-rgb) / 0.4);
-  background: var(--btn-accent-bg);
+  box-shadow: 0 6px 20px rgb(var(--accent-rgb) / 0.42);
+  background: var(--accent-500);
   color: var(--on-accent);
 }
+.btn-record:active {
+  background: var(--accent-600);
+  box-shadow: 0 1px 6px rgb(var(--accent-rgb) / 0.3);
+}
+/* 用户区：一枚凸起的胶囊，悬停时阴影收窄 */
 .user-box {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 4px 10px 4px 5px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  padding: 4px 12px 4px 5px;
+  background: var(--surface-card);
+  border: 0;
   border-radius: 999px;
   cursor: pointer;
   outline: none;
-  transition: border-color 0.18s;
+  box-shadow: var(--elev-raised-xs);
+  transition: box-shadow var(--dur-3) var(--ease-out);
 }
 .user-box:hover {
-  border-color: var(--border-strong);
+  box-shadow: var(--elev-hover);
 }
 .avatar {
   flex-shrink: 0;
-  background: linear-gradient(135deg, var(--accent-500), var(--accent-600)) !important;
+  background: var(--accent-500) !important;
   color: var(--on-accent) !important;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 13px;
-  box-shadow: 0 0 0 2px rgb(var(--accent-rgb) / 0.25);
+  box-shadow: 0 2px 6px rgb(var(--accent-rgb) / 0.35);
 }
 .user-name {
   font-size: 13px;
@@ -398,19 +400,25 @@ html.dark .nav {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 9px;
-  border: 1px solid var(--border);
-  background: var(--bg-card);
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  border: 0;
+  background: var(--surface-card);
   color: var(--text-secondary);
   cursor: pointer;
   outline: none;
-  transition: border-color 0.18s, color 0.18s;
+  box-shadow: var(--elev-raised-xs);
+  transition:
+    box-shadow var(--dur-3) var(--ease-out),
+    color var(--dur-2) ease;
 }
 .theme-btn:hover {
-  border-color: var(--border-strong);
-  color: var(--accent-400);
+  box-shadow: var(--elev-hover);
+  color: var(--accent-500);
+}
+.theme-btn:active {
+  box-shadow: var(--elev-pressed);
 }
 .theme-panel {
   display: flex;
@@ -450,9 +458,10 @@ html.dark .nav {
   border-color: var(--text-primary);
   box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / 0.3);
 }
+/* 新拟物的两套阴影不能贴太近，内容区留出比原来更大的呼吸边 */
 .content {
   flex: 1;
   overflow: auto;
-  padding: 24px 28px;
+  padding: 28px 32px 32px;
 }
 </style>

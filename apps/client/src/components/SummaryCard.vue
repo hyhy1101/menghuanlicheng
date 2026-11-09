@@ -23,7 +23,6 @@ function close() {
 <template>
   <div v-if="summary" class="overlay">
     <div class="card">
-      <div class="card-glow" />
       <div class="ok">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20 6 9 17l-5-5" />
@@ -68,25 +67,14 @@ function close() {
 .card {
   position: relative;
   width: 440px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-strong);
+  background: var(--surface-card);
+  border: 0;
   border-radius: var(--radius-card);
-  padding: 30px 28px 26px;
+  padding: 32px 28px 28px;
   text-align: center;
-  box-shadow: var(--shadow-float), 0 0 60px rgb(var(--accent-rgb) / 0.08);
+  box-shadow: var(--elev-float);
   overflow: hidden;
   animation: pop 0.28s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.card-glow {
-  position: absolute;
-  top: -90px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 300px;
-  height: 180px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgb(var(--accent-rgb) / 0.14), transparent 70%);
-  pointer-events: none;
 }
 @keyframes pop {
   from { transform: scale(0.92) translateY(10px); opacity: 0; }
@@ -94,7 +82,7 @@ function close() {
 }
 .ok {
   color: var(--positive);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 16px;
   display: flex;
   align-items: center;
@@ -108,7 +96,7 @@ function close() {
 }
 .net-value {
   font-size: 44px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.5px;
   line-height: 1.2;
   margin-bottom: 18px;
@@ -132,14 +120,11 @@ function close() {
   margin-bottom: 16px;
 }
 .kv {
-  background: var(--bg-raised);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 11px;
-  transition: border-color 0.15s;
-}
-.kv:hover {
-  border-color: var(--border-strong);
+  background: var(--surface-card);
+  border: 0;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: var(--elev-inset-sm);
 }
 .kv span {
   display: block;
@@ -161,10 +146,11 @@ function close() {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: var(--bg-input);
-  border: 1px dashed var(--border-strong);
-  border-radius: 9px;
-  padding: 11px;
+  background: var(--surface-card);
+  border: 0;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: var(--elev-inset-sm);
   font-size: 13px;
   color: var(--text-secondary);
   margin-bottom: 18px;
@@ -186,31 +172,37 @@ function close() {
   padding: 0 24px;
   border-radius: var(--radius-control);
   border: none;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 14px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
 }
 .btn-gold {
-  background: linear-gradient(180deg, var(--accent-500), var(--accent-600));
+  background: var(--accent-500);
   color: var(--on-accent);
-  box-shadow: 0 4px 18px rgb(var(--accent-rgb) / 0.35);
+  box-shadow: 0 4px 16px rgb(var(--accent-rgb) / 0.32);
 }
 .btn-gold:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 24px rgb(var(--accent-rgb) / 0.45);
-  background: var(--btn-accent-bg);
+  box-shadow: 0 6px 22px rgb(var(--accent-rgb) / 0.45);
+  background: var(--accent-500);
   color: var(--on-accent);
 }
+.btn-gold:active {
+  background: var(--accent-600);
+  box-shadow: 0 1px 6px rgb(var(--accent-rgb) / 0.3);
+}
 .btn-ghost {
-  background: var(--bg-raised);
-  border: 1px solid var(--border);
+  background: var(--surface-card);
+  border: 0;
   color: var(--text-secondary);
+  box-shadow: var(--elev-raised-xs);
 }
 .btn-ghost:hover {
-  border-color: var(--border-strong);
   color: var(--text-primary);
-  background: var(--bg-raised);
+  box-shadow: var(--elev-hover);
+}
+.btn-ghost:active {
+  box-shadow: var(--elev-pressed);
 }
 </style>

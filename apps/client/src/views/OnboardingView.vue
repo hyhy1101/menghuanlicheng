@@ -184,11 +184,11 @@ async function finish() {
 .panel {
   width: 640px;
   max-width: 100%;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: var(--surface-card);
+  border: 0;
   border-radius: var(--radius-card);
-  box-shadow: var(--shadow-float);
-  padding: 30px 34px 26px;
+  box-shadow: var(--elev-float);
+  padding: 32px 36px 28px;
 }
 .brand {
   display: flex;
@@ -203,11 +203,12 @@ async function finish() {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--serif-font);
+  font-family: var(--sans-font);
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--on-accent);
-  background: linear-gradient(135deg, var(--accent-500), var(--accent-600));
+  background: var(--accent-500);
+  box-shadow: 0 4px 14px rgb(var(--accent-rgb) / 0.35);
 }
 h1 {
   margin: 0;

@@ -299,10 +299,11 @@ onMounted(async () => {
   font-size: 13px;
 }
 .card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: var(--surface-card);
+  border: 0;
   border-radius: var(--radius-card);
   padding: 18px 20px;
+  box-shadow: var(--card-shadow);
 }
 .card h3 {
   margin: 0 0 12px;
@@ -321,6 +322,13 @@ onMounted(async () => {
   align-items: center;
   gap: 12px;
   margin-bottom: 16px;
+}
+.avatar-row :deep(.el-avatar) {
+  background: var(--surface-card);
+  color: var(--accent-600);
+  font-weight: 600;
+  font-size: 20px;
+  box-shadow: var(--elev-raised-sm);
 }
 .form-row {
   display: flex;

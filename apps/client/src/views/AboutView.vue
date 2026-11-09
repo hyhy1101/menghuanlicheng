@@ -161,10 +161,11 @@ onMounted(async () => {
   font-size: 13px;
 }
 .card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: var(--surface-card);
+  border: 0;
   border-radius: var(--radius-card);
   padding: 18px 20px;
+  box-shadow: var(--card-shadow);
 }
 .card h3 {
   margin: 0 0 12px;

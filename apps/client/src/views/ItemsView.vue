@@ -311,7 +311,7 @@ onMounted(async () => {
           </span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="220" fixed="right">
+      <el-table-column label="操作" width="252" fixed="right">
         <template #default="{ row }">
           <el-button
             v-if="row.isFixedPrice"
@@ -431,16 +431,18 @@ h2 {
   font-size: 13px;
 }
 .tbl {
-  background: var(--bg-card);
+  background: var(--surface-card);
   border-radius: var(--radius-card);
+  box-shadow: var(--elev-raised);
+  padding: 6px 10px;
 }
 .icon {
   width: 34px;
   height: 34px;
-  border-radius: 8px;
+  border-radius: 10px;
   object-fit: cover;
-  border: 1px solid var(--border);
   display: block;
+  box-shadow: var(--elev-raised-xs);
 }
 .placeholder {
   display: flex;

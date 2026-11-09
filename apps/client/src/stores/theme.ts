@@ -9,11 +9,11 @@ interface ThemeState {
 
 const STORAGE_KEY = 'lc_theme'
 /*
- * 默认亮色 + 鼠尾草：自然有机风本身就是亮色为主的风格，暗色只是备选。
- * 老用户 localStorage 里存的是 { mode:'dark', accent:'gold' }，accent 已不在
- * THEME_ACCENTS 里，load() 的 isAccent 校验会让它整体回落到这里的默认值。
+ * 默认亮色 + 紫罗兰：新拟物以亮色为基准（暗色只是保留的备选）。
+ * 老用户 localStorage 里可能还是 accent:'sage'/'gold'，已不在 THEME_ACCENTS 里，
+ * load() 的 isAccent 校验会让它整体回落到这里的默认值。
  */
-const DEFAULT_THEME: ThemeState = { mode: 'light', accent: 'sage' }
+const DEFAULT_THEME: ThemeState = { mode: 'light', accent: 'violet' }
 
 function isAccent(v: unknown): v is ThemeAccent {
   return THEME_ACCENTS.some((t) => t.id === v)

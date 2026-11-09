@@ -75,7 +75,7 @@ function confirm() {
 }
 .title {
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -133,7 +133,7 @@ function confirm() {
   height: 40px;
   margin: 0;
   padding: 0 20px;
-  font-weight: 700;
+  font-weight: 600;
   flex-shrink: 0;
   background: linear-gradient(180deg, var(--accent-500), var(--accent-600));
   border: none;

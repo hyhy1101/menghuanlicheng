@@ -320,7 +320,7 @@ onMounted(load)
 .page-head h2 {
   margin: 0;
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 600;
 }
 .btn-primary {
   height: 40px;
@@ -333,14 +333,14 @@ onMounted(load)
   border: none;
   font-weight: 600;
   font-size: 14px;
-  background: linear-gradient(180deg, var(--accent-500), var(--accent-600));
+  background: var(--accent-500);
   color: var(--on-accent);
   box-shadow: 0 3px 14px rgb(var(--accent-rgb) / 0.3);
 }
 .btn-primary:hover {
   transform: translateY(-1px);
   box-shadow: 0 5px 20px rgb(var(--accent-rgb) / 0.42);
-  background: var(--btn-accent-bg);
+  background: var(--accent-500);
   color: var(--on-accent);
 }
 /* ---- 号组卡片 ---- */
@@ -350,8 +350,8 @@ onMounted(load)
   gap: 14px;
 }
 .team-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: var(--surface-card);
+  border: 0;
   border-radius: var(--radius-card);
   padding: 16px;
   display: flex;
@@ -362,20 +362,9 @@ onMounted(load)
   box-shadow: var(--card-shadow);
   transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
 }
-.team-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2.5px;
-  background: linear-gradient(90deg, var(--accent-500), rgb(var(--accent-rgb) / 0.1), transparent);
-  opacity: 0.7;
-}
 .team-card:hover {
   transform: translateY(-3px);
-  border-color: var(--border-strong);
-  box-shadow: var(--card-shadow-hover);
+  box-shadow: var(--elev-raised);
 }
 .team-card-top {
   display: flex;
@@ -386,19 +375,19 @@ onMounted(load)
   width: 38px;
   height: 38px;
   flex-shrink: 0;
-  border-radius: 10px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent-400);
-  background: linear-gradient(135deg, rgb(var(--accent-rgb) / 0.2), rgb(var(--accent-rgb) / 0.04));
-  border: 1px solid rgb(var(--accent-rgb) / 0.28);
+  color: var(--accent-600);
+  background: var(--surface-card);
+  box-shadow: var(--elev-inset-sm);
 }
 .team-head-meta {
   min-width: 0;
 }
 .team-name {
-  font-weight: 700;
+  font-weight: 600;
   font-size: 15px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -415,20 +404,23 @@ onMounted(load)
   gap: 8px;
 }
 .ts-item {
-  background: var(--bg-raised);
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  padding: 8px 10px;
+  background: var(--surface-card);
+  border: 0;
+  border-radius: 12px;
+  padding: 9px 10px;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  box-shadow: var(--elev-inset-sm);
 }
 .ts-item span {
-  font-size: 10.5px;
+  font-size: 11px;
   color: var(--text-muted);
+  white-space: nowrap;
 }
 .ts-item b {
-  font-size: 13.5px;
+  font-size: 13px;
+  white-space: nowrap;
 }
 .team-actions {
   display: flex;
@@ -449,7 +441,7 @@ onMounted(load)
 }
 .empty-card:hover {
   border-color: rgb(var(--accent-rgb) / 0.5);
-  color: var(--accent-400);
+  color: var(--ink-accent);
   transform: translateY(-3px);
 }
 .empty-card:hover svg {
@@ -457,22 +449,16 @@ onMounted(load)
 }
 /* ---- 卡片通用 ---- */
 .card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: var(--surface-card);
+  border: 0;
   border-radius: var(--radius-card);
   padding: 18px;
   box-shadow: var(--card-shadow);
 }
 /* el-segmented */
 .range-seg {
-  --el-segmented-bg-color: var(--bg-input);
-  --el-segmented-item-selected-bg-color: var(--accent-500);
-  --el-segmented-item-selected-color: var(--on-accent);
-  --el-segmented-item-hover-bg-color: var(--bg-raised);
-  --el-segmented-item-color: var(--text-muted);
-  --el-segmented-item-hover-color: var(--text-primary);
-  border: 1px solid var(--border);
-  border-radius: 9px;
+  border: 0;
+  border-radius: var(--radius-control);
   padding: 3px;
 }
 .range-seg :deep(.el-segmented__item) {
@@ -486,7 +472,7 @@ onMounted(load)
   --el-table-tr-bg-color: transparent;
   --el-table-header-bg-color: transparent;
   --el-table-row-hover-bg-color: var(--el-fill-color-light);
-  --el-table-border-color: var(--border);
+  --el-table-border-color: var(--line-separator);
   --el-table-header-text-color: var(--text-muted);
   --el-table-text-color: var(--text-primary);
   font-size: 13px;
@@ -500,19 +486,19 @@ onMounted(load)
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
   font-size: 11px;
-  font-weight: 700;
-  background: var(--bg-raised);
+  font-weight: 600;
+  background: var(--surface-card);
   color: var(--text-muted);
-  border: 1px solid var(--border);
+  box-shadow: var(--elev-raised-xs);
 }
 .rank.top {
-  background: linear-gradient(135deg, var(--accent-500), var(--accent-600));
+  background: var(--accent-500);
   color: var(--on-accent);
-  border-color: transparent;
+  box-shadow: none;
 }
 .gold {
   color: var(--accent-500);
@@ -526,11 +512,10 @@ onMounted(load)
 .team-chip {
   display: inline-block;
   font-size: 12px;
-  color: var(--accent-400);
-  padding: 2px 10px;
-  border-radius: 20px;
-  border: 1px solid rgb(var(--accent-rgb) / 0.28);
-  background: rgb(var(--accent-rgb) / 0.08);
+  color: var(--accent-600);
+  padding: 3px 11px;
+  border-radius: var(--radius-pill);
+  background: rgb(var(--accent-rgb) / 0.1);
 }
 /* ---- 按钮 ---- */
 .btn-gold,
@@ -543,26 +528,30 @@ onMounted(load)
   font-size: 13px;
 }
 .btn-gold {
-  background: linear-gradient(180deg, var(--accent-500), var(--accent-600));
+  background: var(--accent-500);
   border: none;
   color: var(--on-accent);
   flex: 1;
+  box-shadow: 0 3px 12px rgb(var(--accent-rgb) / 0.28);
 }
 .btn-gold:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 16px rgb(var(--accent-rgb) / 0.38);
-  background: var(--btn-accent-bg);
+  background: var(--accent-500);
   color: var(--on-accent);
 }
 .btn-ghost {
-  border: 1px solid var(--border);
-  background: var(--bg-raised);
+  border: 0;
+  background: var(--surface-card);
   color: var(--text-secondary);
+  box-shadow: var(--elev-raised-xs);
 }
 .btn-ghost:hover {
-  border-color: var(--border-strong);
   color: var(--text-primary);
-  background: var(--bg-raised);
+  box-shadow: var(--elev-hover);
+}
+.btn-ghost:active {
+  box-shadow: var(--elev-pressed);
 }
 /* ---- 弹窗表单 ---- */
 .dlg-form {

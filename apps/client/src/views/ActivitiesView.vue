@@ -417,27 +417,30 @@ h2 {
   min-height: 300px;
 }
 .day-col {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
+  background: var(--surface-card);
+  border: 0;
+  border-radius: 18px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  /* 七列并排，凸起会让阴影互相污染，这里改成凹槽：整周是一块下沉的托盘 */
+  box-shadow: var(--elev-inset-sm);
 }
 .day-col.today {
-  border-color: var(--accent-500);
-  box-shadow: 0 0 0 2px rgb(var(--accent-rgb) / 0.12);
+  box-shadow:
+    inset 2px 2px 6px var(--shade),
+    inset -2px -2px 6px var(--glow),
+    0 0 0 2px rgb(var(--accent-rgb) / 0.35);
 }
 .day-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   padding: 10px 12px;
-  background: var(--bg-panel);
-  border-bottom: 1px solid var(--border);
+  background: var(--surface-tray);
 }
 .week {
-  font-weight: 700;
+  font-weight: 600;
 }
 .date {
   color: var(--text-muted);
