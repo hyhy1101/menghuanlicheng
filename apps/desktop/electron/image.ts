@@ -6,7 +6,7 @@ import { extname, join, resolve, sep } from 'node:path'
  * 自定义图片协议 app-img://local/<相对路径>
  *
  * - `user/...` 走 userData/images（用户上传的图标、头像，升级不会丢）
- * - 其余走内置资源目录（发布包里 610 张物品图）
+ * - 其余走内置资源目录（发布包里 255 张物品图）
  *
  * 必须注册成 standard + secure 才能在 <img> 与 fetch 里当普通 URL 用。
  */
