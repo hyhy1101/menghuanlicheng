@@ -48,6 +48,13 @@ const today = computed(() => {
 
 const initial = computed(() => (nickname.value || '玩')[0])
 
+// 两套固定配色的风格各自锁死显示模式与主题色，提示文案要跟着风格走
+const styleHint = computed(() =>
+  theme.style === 'glass'
+    ? '玻璃拟态按规范固定暗色与香槟金主色。'
+    : '柔和界面风按规范固定亮色与靛蓝主色。'
+)
+
 function goRecord() {
   void router.push('/record')
 }
@@ -97,7 +104,7 @@ onMounted(() => {
 
       <span class="date">{{ today }}</span>
 
-      <el-popover trigger="click" :width="248" popper-class="theme-pop">
+      <el-popover trigger="click" :width="300" popper-class="theme-pop">
         <template #reference>
           <button class="theme-btn" title="主题设置">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
@@ -146,7 +153,7 @@ onMounted(() => {
               />
             </div>
           </div>
-          <p v-else class="theme-hint">柔和界面风按规范固定亮色与靛蓝主色。</p>
+          <p v-else class="theme-hint">{{ styleHint }}</p>
         </div>
       </el-popover>
 
@@ -631,6 +638,170 @@ html[data-style='soft'] .avatar {
   html[data-style='soft'] .nav-item:active,
   html[data-style='soft'] .user-box:hover,
   html[data-style='soft'] .theme-btn:hover {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* ============================================================================
+   主题三：玻璃拟态 —— 顶栏与导航
+
+   顶栏是一条 72px 高的夜色玻璃带：4% 白 + 24px 模糊，只有底边一条 10% 的
+   结构线。导航退成透明链接，当前页靠一段白色高光与一颗香槟金指示灯标出，
+   不抢占主行动那枚香槟金胶囊。
+   ============================================================================ */
+html[data-style='glass'] .topbar {
+  background: rgba(11, 19, 34, 0.55);
+  box-shadow: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  backdrop-filter: blur(24px) saturate(160%);
+}
+html[data-style='glass'] .logo-badge {
+  border-radius: 16px;
+  color: var(--ink-3);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 0 rgba(2, 6, 16, 0.35);
+}
+html[data-style='glass'] .logo-name {
+  color: #ffffff;
+}
+html[data-style='glass'] .nav-item {
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--ink-3);
+  box-shadow: none;
+  transition:
+    background-color var(--dur-4) var(--ease-out),
+    color var(--dur-4) var(--ease-out),
+    box-shadow var(--dur-4) var(--ease-out);
+}
+html[data-style='glass'] .nav-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  transform: none;
+  box-shadow: none;
+}
+html[data-style='glass'] .nav-item:active {
+  background: rgba(255, 255, 255, 0.1);
+  transform: none;
+  box-shadow: none;
+  transition-duration: 0ms;
+}
+/* 用 html.dark 前缀压住上面那条 `html.dark .nav-item.on`（同文件里权重更高） */
+html.dark[data-style='glass'] .nav-item.on,
+html.dark[data-style='glass'] .nav-item.on:active {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  transform: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+/* 当前页指示灯：全站唯一允许出现在内容区之外的香槟金 */
+html[data-style='glass'] .nav-item.on::after {
+  background: var(--accent-500);
+  box-shadow: 0 0 8px 1px rgba(228, 184, 99, 0.55);
+}
+html[data-style='glass'] .date {
+  color: var(--ink-3);
+}
+/* 主行动：香槟金实心胶囊，悬停上浮 1px 并叠一层金色光晕 */
+html[data-style='glass'] .btn-record {
+  border-radius: var(--radius-pill);
+  background: var(--accent-500);
+  color: #060a13;
+  box-shadow:
+    0 10px 24px rgba(228, 184, 99, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transition:
+    background-color var(--dur-4) var(--ease-out),
+    box-shadow var(--dur-4) var(--ease-out),
+    transform var(--dur-4) var(--ease-out);
+}
+html[data-style='glass'] .btn-record:hover {
+  background: rgba(228, 184, 99, 0.92);
+  color: #060a13;
+  transform: translateY(-1px);
+  box-shadow:
+    0 12px 32px rgba(228, 184, 99, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+html[data-style='glass'] .btn-record:active {
+  background: var(--accent-500);
+  color: #060a13;
+  transform: translateY(0) scale(0.98);
+  box-shadow: inset 0 2px 8px rgba(120, 88, 20, 0.45);
+}
+html[data-style='glass'] .user-box {
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 8px 24px rgba(3, 7, 18, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  transition:
+    background-color var(--dur-4) var(--ease-out),
+    box-shadow var(--dur-4) var(--ease-out);
+}
+html[data-style='glass'] .user-box:hover {
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 16px 40px rgba(3, 7, 18, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+}
+html[data-style='glass'] .user-name {
+  color: #ffffff;
+}
+html[data-style='glass'] .avatar {
+  box-shadow: 0 4px 14px rgba(228, 184, 99, 0.35);
+}
+html[data-style='glass'] .theme-btn {
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ink-3);
+  box-shadow:
+    0 8px 24px rgba(3, 7, 18, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  transition:
+    background-color var(--dur-4) var(--ease-out),
+    box-shadow var(--dur-4) var(--ease-out),
+    color var(--dur-4) var(--ease-out);
+}
+html[data-style='glass'] .theme-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--accent-400);
+  box-shadow:
+    0 16px 40px rgba(3, 7, 18, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+}
+html[data-style='glass'] .theme-btn:active {
+  box-shadow: inset 0 2px 8px rgba(2, 6, 16, 0.45);
+}
+/* 面板里的三段风格选项：未选中是玻璃薄片，选中是香槟金染色玻璃 */
+html[data-style='glass'] .style-opt {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ink-3);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  transition:
+    background-color var(--dur-4) var(--ease-out),
+    box-shadow var(--dur-4) var(--ease-out),
+    color var(--dur-4) var(--ease-out);
+}
+html[data-style='glass'] .style-opt:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+html[data-style='glass'] .style-opt.on {
+  background: rgba(228, 184, 99, 0.14);
+  color: var(--accent-400);
+  box-shadow: inset 0 0 0 1px rgba(228, 184, 99, 0.4);
+}
+html[data-style='glass'] .theme-label {
+  color: var(--ink-2);
+}
+html[data-style='glass'] .theme-hint {
+  color: var(--ink-3);
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-style='glass'] .nav-item,
+  html[data-style='glass'] .nav-item:hover,
+  html[data-style='glass'] .nav-item:active,
+  html[data-style='glass'] .btn-record:hover,
+  html[data-style='glass'] .user-box,
+  html[data-style='glass'] .theme-btn {
     transition: none;
     transform: none;
   }

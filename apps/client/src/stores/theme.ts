@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { THEME_ACCENTS, THEME_STYLES } from '../themes'
+import { STYLE_FORCED_MODE, THEME_ACCENTS, THEME_STYLES } from '../themes'
 import type { ThemeAccent, ThemeMode, ThemeStyle } from '../themes'
 
 interface ThemeState {
@@ -29,8 +29,8 @@ function load(): ThemeState {
     const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? 'null') as Partial<ThemeState> | null
     if (raw && (raw.mode === 'dark' || raw.mode === 'light') && isAccent(raw.accent)) {
       const style = isStyle(raw.style) ? raw.style : DEFAULT_THEME.style
-      // 主题二只有亮色一套取值，历史数据里如果存成「柔和 + 暗色」，按亮色读
-      const mode = style === 'soft' ? 'light' : raw.mode
+      // 主题二只有亮色、主题三只有暗色：历史数据里的模式与规范冲突时以规范为准
+      const mode = STYLE_FORCED_MODE[style] ?? raw.mode
       return { style, mode, accent: raw.accent }
     }
   } catch {
@@ -42,9 +42,9 @@ function load(): ThemeState {
 export const useThemeStore = defineStore('theme', {
   state: (): ThemeState => load(),
   getters: {
-    /** 主题二只提供亮色，显示模式开关要锁住 */
+    /** 主题二只提供亮色、主题三只提供暗色，显示模式开关要锁住 */
     canToggleMode: (s) => s.style === 'neumorphic',
-    /** 主题二按规范固定靛蓝主色，主题色选择器隐藏 */
+    /** 主题二固定靛蓝、主题三固定香槟金，主题色选择器隐藏 */
     canPickAccent: (s) => s.style === 'neumorphic'
   },
   actions: {
@@ -62,7 +62,8 @@ export const useThemeStore = defineStore('theme', {
     },
     setStyle(style: ThemeStyle) {
       this.style = style
-      if (style === 'soft') this.mode = 'light'
+      const forced = STYLE_FORCED_MODE[style]
+      if (forced) this.mode = forced
       this.apply()
       this.persist()
     },

@@ -396,6 +396,116 @@ html[data-style='soft'] {
   --scroll-thumb-hover: #b6c2d2;
 }
 
+/* ============================================================================
+   主题三：玻璃拟态（glass）
+
+   玻璃没有自己的颜色：它借用、弯曲、柔化背后的光。整套系统只靠三件事成立 ——
+     1. 深墨夜景底 + 两三团大半径柔光斑，玻璃必须有东西可模糊（见下面的 body 背景）
+     2. 面板只取 5%~12% 的白，配 40px 模糊与 180% 饱和度
+     3. 光必须有方向：顶边白色内高光、底边深色内暗缘、外层深阴影，三层同时存在
+
+   全站唯一强调色是香槟金，只给主行动与关键数字。
+
+   只做暗色：规范只给了一套夜色取值，切到主题三时显示模式锁在暗色（见 theme store）。
+   本块必须排在 html.dark 与 data-accent 之后 —— 选择器权重相同，靠顺序压住它们。
+   ============================================================================ */
+html[data-style='glass'] {
+  /* 夜景底：三层递进的深色，用来区分相邻区块而不引入第二条色带 */
+  --base: #0b1322;
+  --shade: #060a13;
+  --glow: rgba(255, 255, 255, 0.08);
+  --tint: #0f1a2c;
+  --sunken: #16233a;
+
+  /* 表面：一律半透明。超过 15% 就退化成实心色块，玻璃感消失 */
+  --surface-page: #0b1322;
+  --surface-card: rgba(255, 255, 255, 0.08);
+  --surface-tray: rgba(255, 255, 255, 0.14);
+  --surface-sunken: rgba(255, 255, 255, 0.05);
+
+  /* 文字：主文白色，次级借月光钢，最暗的月钢色只做结构线 */
+  --n-0: #ffffff;
+  --n-50: #16233a;
+  --n-100: var(--base);
+  --n-200: var(--sunken);
+  --n-300: #2b3f5e;
+  --n-400: #33517a;
+  --n-500: #5d7ba3;
+  --n-600: #7c9cc4;
+  --n-700: #9db6d5;
+  --n-800: #c9d8ea;
+  --n-900: #ffffff;
+  --n-950: #ffffff;
+
+  --ink-1: #ffffff;
+  --ink-2: #c9d8ea;
+  --ink-3: #7c9cc4;
+  --ink-4: #5d7ba3;
+
+  --line-control: rgba(255, 255, 255, 0.15);
+  --line-separator: rgba(255, 255, 255, 0.1);
+  --line-focus: var(--accent-500);
+
+  /* 光影：三层同时存在才算「一片玻璃」；只给外阴影就是一块灰板 */
+  --elev-raised:
+    0 16px 40px rgba(3, 7, 18, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(2, 6, 16, 0.35);
+  --elev-raised-lg:
+    0 24px 64px rgba(3, 7, 18, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    inset 0 -1px 0 rgba(2, 6, 16, 0.35);
+  --elev-raised-sm:
+    0 8px 24px rgba(3, 7, 18, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(2, 6, 16, 0.3);
+  --elev-raised-xs:
+    0 4px 14px rgba(3, 7, 18, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(2, 6, 16, 0.28);
+  --elev-hover:
+    0 24px 64px rgba(3, 7, 18, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    inset 0 -1px 0 rgba(2, 6, 16, 0.35);
+  /* 玻璃没有凹陷语义，这几个只用于必须沉下去的极小内件（键帽缝、滑块槽） */
+  --elev-inset: inset 0 1px 0 rgba(2, 6, 16, 0.35);
+  --elev-inset-sm: inset 0 1px 0 rgba(2, 6, 16, 0.3);
+  --elev-well: inset 0 2px 6px rgba(2, 6, 16, 0.4);
+  --elev-pressed: inset 0 2px 8px rgba(2, 6, 16, 0.45);
+  --elev-float:
+    0 32px 80px rgba(3, 7, 18, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -1px 0 rgba(2, 6, 16, 0.4);
+  --scrim: rgba(2, 6, 16, 0.55);
+
+  /* 状态色：夜色里提亮一档，文字与图表都还能读 */
+  --positive: #5fd3b4;
+  --positive-rgb: 95 211 180;
+  --negative: #ff9a9a;
+  --negative-rgb: 255 138 138;
+  --warning: #e4b863;
+  --warning-rgb: 228 184 99;
+  --info: #7c9cc4;
+  --info-rgb: 124 156 196;
+
+  /* 品牌：香槟金，压在夜色上的唯一暖色 */
+  --accent-rgb: 228 184 99;
+  --accent-400: #f2d394;
+  --accent-500: #e4b863;
+  --accent-600: #c99a45;
+  --ink-accent: #e4b863;
+  --accent-glow: rgba(228, 184, 99, 0.22);
+  --on-accent: #060a13;
+  --btn-accent-bg: var(--accent-500);
+
+  /* 动效：玻璃需要慢，统一 500ms，只留一个缓动 */
+  --dur-2: 300ms;
+  --dur-3: 500ms;
+  --dur-4: 500ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-modal: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --bg-grid: rgba(124, 156, 196, 0.04);
+  --bg-accent-glow: 0.1;
+  --bg-info-glow: 0.08;
+  --scroll-thumb: rgba(255, 255, 255, 0.18);
+  --scroll-thumb-hover: rgba(255, 255, 255, 0.3);
+}
+
 /* 物品价格分级：四档改用状态色系，避开与品牌色撞色 */
 .tier-w {
   color: var(--info);
@@ -1291,6 +1401,438 @@ html[data-style='soft'] .el-pagination.is-background .el-pager li.is-active {
   html[data-style='soft'] .el-button,
   html[data-style='soft'] .el-button:not(.is-disabled):hover,
   html[data-style='soft'] .el-button:not(.is-disabled):active {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* ============================================================================
+   主题三：玻璃拟态 —— 页面光与玻璃面板
+
+   玻璃必须有东西可模糊，所以先给页面画几团大半径柔光斑，再让面板半透。
+   光斑挂在 body 上而不是滚动容器里：内容滚动时光源不动，天然形成视差。
+   ============================================================================ */
+html[data-style='glass'] body {
+  color: var(--ink-1);
+  background-color: #060a13;
+  background-image:
+    radial-gradient(64% 52% at 12% -10%, rgba(66, 106, 161, 0.85), transparent 62%),
+    radial-gradient(44% 38% at 92% 4%, rgba(228, 184, 99, 0.2), transparent 62%),
+    radial-gradient(62% 54% at 82% 100%, rgba(48, 82, 128, 0.75), transparent 64%),
+    radial-gradient(52% 46% at 40% 58%, rgba(58, 94, 148, 0.42), transparent 68%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* 面板：8% 白 + 40px 模糊 + 180% 饱和；悬停升到 12%、描边到 30%、上浮 2px */
+html[data-style='glass'] .card,
+html[data-style='glass'] .panel {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-card);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  backdrop-filter: blur(40px) saturate(180%);
+  box-shadow:
+    0 16px 40px rgba(3, 7, 18, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(2, 6, 16, 0.35);
+  transition:
+    background-color var(--dur-4) var(--ease-out),
+    border-color var(--dur-4) var(--ease-out),
+    box-shadow var(--dur-4) var(--ease-out),
+    transform var(--dur-4) var(--ease-out);
+}
+html[data-style='glass'] .card:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow:
+    0 24px 64px rgba(3, 7, 18, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    inset 0 -1px 0 rgba(2, 6, 16, 0.35);
+}
+
+/* 弹层与浮层：比卡片更靠前，用更深的夜色玻璃保证压得住页面内容 */
+html[data-style='glass'] .el-dialog,
+html[data-style='glass'] .el-message-box {
+  background: rgba(20, 31, 50, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 32px;
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  backdrop-filter: blur(40px) saturate(180%);
+  box-shadow:
+    0 32px 80px rgba(3, 7, 18, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -1px 0 rgba(2, 6, 16, 0.4);
+}
+html[data-style='glass'] .el-overlay {
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+html[data-style='glass'] .el-popper.is-light,
+html[data-style='glass'] .el-popper.is-dark {
+  background: rgba(18, 28, 46, 0.72);
+  border-radius: var(--radius-control);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  backdrop-filter: blur(40px) saturate(180%);
+  /* 圆角描边用内阴影画：真加 1px 边框会改变浮层尺寸，箭头会偏 */
+  box-shadow:
+    0 16px 40px rgba(3, 7, 18, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  color: var(--ink-1);
+}
+html[data-style='glass'] .el-popper.is-light .el-popper__arrow::before,
+html[data-style='glass'] .el-popper.is-dark .el-popper__arrow::before {
+  background: rgba(18, 28, 46, 0.72);
+}
+html[data-style='glass'] .el-notification,
+html[data-style='glass'] .el-message {
+  background: rgba(20, 31, 50, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  backdrop-filter: blur(40px) saturate(180%);
+  box-shadow:
+    0 24px 64px rgba(3, 7, 18, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+html[data-style='glass'] .el-dropdown-menu__item:not(.is-disabled):hover,
+html[data-style='glass'] .el-dropdown-menu__item:not(.is-disabled):focus,
+html[data-style='glass'] .el-select-dropdown__item.is-hovering {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ink-1);
+}
+html[data-style='glass'] .el-select-dropdown__item.is-selected {
+  color: var(--accent-400);
+}
+html[data-style='glass'] .el-loading-mask {
+  background-color: rgba(6, 10, 19, 0.55);
+}
+
+/* 按钮：玻璃薄片，静置只有一层外阴影，悬停提亮描边，按下轻微内凹 */
+/* 描边一律用内阴影画：真加 1px border 会把每个按钮撑高 2px，与其它主题对不齐 */
+html[data-style='glass'] .el-button {
+  background: rgba(255, 255, 255, 0.06);
+  border: 0;
+  color: var(--ink-2);
+  box-shadow:
+    0 8px 24px rgba(3, 7, 18, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  backdrop-filter: blur(40px) saturate(180%);
+  transition:
+    background-color var(--dur-4) var(--ease-out),
+    box-shadow var(--dur-4) var(--ease-out),
+    transform var(--dur-4) var(--ease-out),
+    color var(--dur-4) var(--ease-out);
+}
+html[data-style='glass'] .el-button:not(.is-disabled):not(.is-link):not(.is-text):hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow:
+    0 16px 40px rgba(3, 7, 18, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+html[data-style='glass'] .el-button:not(.is-disabled):not(.is-link):not(.is-text):active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: inset 0 2px 8px rgba(2, 6, 16, 0.45);
+}
+html[data-style='glass'] .el-button.is-disabled,
+html[data-style='glass'] .el-button.is-disabled:hover {
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+html[data-style='glass'] .el-button.is-link,
+html[data-style='glass'] .el-button.is-text {
+  background: transparent;
+  border: 0;
+  color: var(--ink-3);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+html[data-style='glass'] .el-button.is-link:hover,
+html[data-style='glass'] .el-button.is-text:hover {
+  background: transparent;
+  color: var(--accent-400);
+  box-shadow: none;
+}
+
+/* 主行动：全站唯一的香槟金实心，999px 全圆角，悬停上浮 1px 并叠一层金色光晕 */
+html[data-style='glass'] .el-button--primary:not(.is-link):not(.is-text) {
+  background: var(--accent-500);
+  border: 0;
+  border-radius: var(--radius-pill);
+  color: #060a13;
+  font-weight: 500;
+  box-shadow:
+    0 10px 24px rgba(228, 184, 99, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+html[data-style='glass'] .el-button--primary:not(.is-link):not(.is-text):not(.is-disabled):hover {
+  background: rgba(228, 184, 99, 0.92);
+  color: #060a13;
+  transform: translateY(-1px);
+  box-shadow:
+    0 12px 32px rgba(228, 184, 99, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+html[data-style='glass'] .el-button--primary:not(.is-link):not(.is-text):not(.is-disabled):active {
+  background: var(--accent-500);
+  color: #060a13;
+  transform: translateY(0) scale(0.98);
+  box-shadow: inset 0 2px 8px rgba(120, 88, 20, 0.45);
+}
+html[data-style='glass'] .el-button--primary.is-disabled {
+  background: rgba(228, 184, 99, 0.35);
+  color: rgba(6, 10, 19, 0.7);
+  box-shadow: none;
+}
+
+/* 危险行动：香槟金是唯一的强调色，破坏性操作改用珊瑚染色玻璃而不是第二块实心色 */
+html[data-style='glass'] .el-button--danger:not(.is-link):not(.is-text) {
+  background: rgba(255, 138, 138, 0.12);
+  border: 0;
+  color: #ff9a9a;
+  box-shadow:
+    0 8px 24px rgba(3, 7, 18, 0.35), inset 0 0 0 1px rgba(255, 138, 138, 0.45);
+}
+html[data-style='glass'] .el-button--danger:not(.is-link):not(.is-text):not(.is-disabled):hover {
+  background: rgba(255, 138, 138, 0.2);
+  color: #ffb8b8;
+  transform: translateY(-1px);
+  box-shadow:
+    0 16px 40px rgba(3, 7, 18, 0.5), inset 0 0 0 1px rgba(255, 138, 138, 0.7);
+}
+html[data-style='glass'] .el-button--danger:not(.is-link):not(.is-text):not(.is-disabled):active {
+  background: rgba(255, 138, 138, 0.16);
+  color: #ffb8b8;
+  transform: translateY(0) scale(0.98);
+  box-shadow: inset 0 2px 8px rgba(2, 6, 16, 0.45);
+}
+
+/* 输入框：透明底 + 1px 白 15% 描边。描边用内阴影而不是 border，
+   否则每个输入框会长高 2px，与其它主题的行高对不齐 */
+html[data-style='glass'] .el-input__wrapper,
+html[data-style='glass'] .el-select__wrapper,
+html[data-style='glass'] .el-range-editor.el-input__wrapper {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15) !important;
+  transition:
+    background-color var(--dur-4) var(--ease-out),
+    box-shadow var(--dur-4) var(--ease-out);
+}
+html[data-style='glass'] .el-textarea__inner {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  box-shadow: none !important;
+  transition:
+    background-color var(--dur-4) var(--ease-out),
+    border-color var(--dur-4) var(--ease-out),
+    box-shadow var(--dur-4) var(--ease-out);
+}
+html[data-style='glass'] .el-input__wrapper:hover,
+html[data-style='glass'] .el-select__wrapper:hover {
+  background-color: rgba(255, 255, 255, 0.07) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25) !important;
+}
+html[data-style='glass'] .el-textarea__inner:hover {
+  background-color: rgba(255, 255, 255, 0.07) !important;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+/* 聚焦：描边升到 40% + 3px 白 8% 外环，尺寸不变 */
+html[data-style='glass'] .el-input__wrapper.is-focus,
+html[data-style='glass'] .el-select__wrapper.is-focused {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.4),
+    0 0 0 3px rgba(255, 255, 255, 0.08) !important;
+}
+html[data-style='glass'] .el-textarea__inner:focus {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08) !important;
+}
+html[data-style='glass'] .el-input.is-disabled .el-input__wrapper,
+html[data-style='glass'] .el-select__wrapper.is-disabled {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08) !important;
+  opacity: 0.7;
+}
+html[data-style='glass'] .el-input__inner,
+html[data-style='glass'] .el-textarea__inner,
+html[data-style='glass'] .el-select__selected-item {
+  color: var(--ink-1);
+}
+html[data-style='glass'] .el-input__inner::placeholder,
+html[data-style='glass'] .el-textarea__inner::placeholder {
+  color: var(--ink-3);
+}
+html[data-style='glass'] .el-input-number__decrease,
+html[data-style='glass'] .el-input-number__increase {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* 表格：只留横向的结构线（月钢色），表头是安静的月光小字 */
+html[data-style='glass'] .el-table th.el-table__cell {
+  color: var(--ink-3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+html[data-style='glass'] .el-table td.el-table__cell {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+html[data-style='glass'] .el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* 开关：玻璃轨道，选中是香槟金 + 金色柔光 */
+html[data-style='glass'] .el-switch__core {
+  background: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15) !important;
+}
+html[data-style='glass'] .el-switch.is-checked .el-switch__core {
+  background: var(--accent-500) !important;
+  box-shadow: 0 6px 16px rgba(228, 184, 99, 0.3) !important;
+}
+html[data-style='glass'] .el-switch__core .el-switch__action {
+  background: #eef3fa;
+  box-shadow: 0 2px 6px rgba(3, 7, 18, 0.5);
+}
+html[data-style='glass'] .el-switch__core .el-switch__inner-wrapper {
+  color: var(--ink-2);
+}
+html[data-style='glass'] .el-switch.is-checked .el-switch__core .el-switch__inner-wrapper {
+  color: #060a13;
+}
+
+/* 复选 / 单选：玻璃底 + 白 25% 细环，选中是香槟金，勾与圆点转成深墨 */
+html[data-style='glass'] .el-checkbox__inner,
+html[data-style='glass'] .el-radio__inner {
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25) !important;
+}
+html[data-style='glass'] .el-checkbox__input.is-checked .el-checkbox__inner,
+html[data-style='glass'] .el-radio__input.is-checked .el-radio__inner {
+  background: var(--accent-500);
+  box-shadow: none !important;
+}
+html[data-style='glass'] .el-checkbox__inner::after {
+  border-color: #060a13;
+}
+html[data-style='glass'] .el-radio__input.is-checked .el-radio__inner::after {
+  background-color: #060a13;
+}
+
+/* 分段控件 / 单选键帽 / 分页：都是同一种玻璃薄片 */
+html[data-style='glass'] .el-segmented {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  --el-segmented-item-selected-color: #ffffff;
+}
+html[data-style='glass'] .el-segmented__item-selected {
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 4px 14px rgba(3, 7, 18, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+html[data-style='glass'] .el-radio-button__inner {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ink-2);
+  box-shadow: 0 4px 14px rgba(3, 7, 18, 0.4);
+}
+html[data-style='glass'] .el-radio-button__original-radio:checked + .el-radio-button__inner {
+  background: rgba(228, 184, 99, 0.14);
+  color: var(--accent-400);
+  box-shadow: inset 0 0 0 1px rgba(228, 184, 99, 0.4);
+}
+html[data-style='glass'] .el-pagination.is-background .el-pager li,
+html[data-style='glass'] .el-pagination.is-background .btn-prev,
+html[data-style='glass'] .el-pagination.is-background .btn-next {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ink-2);
+  box-shadow: 0 4px 14px rgba(3, 7, 18, 0.4);
+}
+html[data-style='glass'] .el-pagination.is-background .el-pager li.is-active {
+  background: rgba(228, 184, 99, 0.16);
+  color: var(--accent-400);
+  box-shadow: inset 0 0 0 1px rgba(228, 184, 99, 0.4);
+}
+
+/* 标签：染色玻璃胶囊，文字抬到 400 档保证夜色里读得清 */
+html[data-style='glass'] .el-tag--primary {
+  --el-tag-bg-color: rgba(228, 184, 99, 0.14);
+  --el-tag-text-color: var(--accent-400);
+}
+html[data-style='glass'] .el-tag--success {
+  --el-tag-bg-color: rgba(95, 211, 180, 0.14);
+  --el-tag-text-color: var(--positive);
+}
+html[data-style='glass'] .el-tag--danger {
+  --el-tag-bg-color: rgba(255, 138, 138, 0.14);
+  --el-tag-text-color: var(--negative);
+}
+html[data-style='glass'] .el-tag--warning {
+  --el-tag-bg-color: rgba(228, 184, 99, 0.16);
+  --el-tag-text-color: var(--accent-400);
+}
+html[data-style='glass'] .el-tag--info {
+  --el-tag-bg-color: rgba(124, 156, 196, 0.16);
+  --el-tag-text-color: var(--info);
+}
+html[data-style='glass'] .el-tag {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 指标小卡（Stat Tile）：玻璃面板的轻量版，5% 白 + 24px 模糊 */
+html[data-style='glass'] .stat {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* 关键数字用香槟金：规范把强调色只留给主行动和核心数字，亏损仍走珊瑚红 */
+html[data-style='glass'] .hero-value.up {
+  color: var(--accent-500);
+}
+
+/* 其它小件 */
+html[data-style='glass'] .el-divider {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+html[data-style='glass'] .el-form-item__label {
+  color: var(--ink-2);
+}
+html[data-style='glass'] .el-empty__description p {
+  color: var(--ink-3);
+}
+html[data-style='glass'] .el-tabs__item.is-active {
+  color: var(--accent-400);
+}
+html[data-style='glass'] .el-tabs__active-bar {
+  background-color: var(--accent-500);
+}
+html[data-style='glass'] .el-tabs__nav-wrap::after {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+html[data-style='glass'] .el-dialog__title,
+html[data-style='glass'] .el-message-box__title {
+  color: #ffffff;
+}
+
+/* 图表 tooltip 画在 canvas 上，没法做模糊：给一个接近不透明的夜色底 */
+html[data-style='glass'] {
+  --el-bg-color-overlay: #131e30;
+}
+
+/* 减少动态效果：取消位移与缩放，只保留颜色和描边的变化 */
+@media (prefers-reduced-motion: reduce) {
+  html[data-style='glass'] .card,
+  html[data-style='glass'] .card:hover,
+  html[data-style='glass'] .el-button,
+  html[data-style='glass'] .el-button:not(.is-disabled):hover,
+  html[data-style='glass'] .el-button:not(.is-disabled):active {
     transition: none;
     transform: none;
   }
