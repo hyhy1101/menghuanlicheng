@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import type { MileageRecordDTO } from '@lc/shared'
 import { recordsApi } from '../api/records'
 import { fmtWan } from '../utils/format'
@@ -173,6 +173,77 @@ async function exportCsv() {
   }
 }
 
+/* ---------------- 清理记录 ---------------- */
+
+const clearVisible = ref(false)
+const clearing = ref(false)
+const clearScope = ref<'filter' | 'all'>('filter')
+/** 全部记录的条数，进弹窗时查一次 */
+const allTotal = ref(0)
+
+const hasFilter = computed(() => Boolean(dateRange.value) || Boolean(keyword.value.trim()))
+
+const filterDesc = computed(() => {
+  const parts = [dateRange.value ? `${dateRange.value[0]} 至 ${dateRange.value[1]}` : '全部日期']
+  if (keyword.value.trim()) parts.push(`物品含「${keyword.value.trim()}」`)
+  return parts.join(' · ')
+})
+
+const clearCount = computed(() => (clearScope.value === 'filter' ? total.value : allTotal.value))
+
+async function openClear() {
+  clearScope.value = hasFilter.value ? 'filter' : 'all'
+  try {
+    const { data } = await recordsApi.list({ page: 1, pageSize: 1 })
+    allTotal.value = data.data.total
+  } catch (e) {
+    ElMessage.error((e as Error).message)
+    return
+  }
+  clearVisible.value = true
+}
+
+async function doClear() {
+  const count = clearCount.value
+  if (!count) return
+  const what =
+    clearScope.value === 'filter'
+      ? `当前筛选范围（${filterDesc.value}）内的 ${count} 条`
+      : `全部 ${count} 条`
+  try {
+    await ElMessageBox.confirm(
+      `将永久删除${what}已结算记录，日统计会一并重算，删除后无法恢复。`,
+      '确认清理',
+      { confirmButtonText: '确认删除', cancelButtonText: '取消', type: 'warning' }
+    )
+  } catch {
+    return
+  }
+
+  clearing.value = true
+  try {
+    const { data } = await recordsApi.clear(
+      clearScope.value === 'all'
+        ? { all: true }
+        : {
+            startDate: dateRange.value?.[0],
+            endDate: dateRange.value?.[1],
+            keyword: keyword.value.trim() || undefined
+          }
+    )
+    clearVisible.value = false
+    page.value = 1
+    const { data: after } = await recordsApi.list({ page: 1, pageSize: 1 })
+    allTotal.value = after.data.total
+    await load()
+    ElMessage.success(`已清理 ${data.data.deleted} 条记录`)
+  } catch (e) {
+    ElMessage.error((e as Error).message)
+  } finally {
+    clearing.value = false
+  }
+}
+
 onMounted(presetToday)
 </script>
 
@@ -211,6 +282,7 @@ onMounted(presetToday)
         />
         <el-button type="primary" :loading="loading" @click="onRangeChange">查询</el-button>
         <el-button :loading="exporting" @click="exportCsv">导出 CSV</el-button>
+        <el-button class="clear-entry" @click="openClear">清理记录</el-button>
       </div>
 
       <div class="summary">
@@ -277,6 +349,37 @@ onMounted(presetToday)
         />
       </div>
     </div>
+
+    <!-- 清理记录 -->
+    <el-dialog v-model="clearVisible" title="清理记录信息" width="480px" align-center>
+      <div class="clear-body">
+        <p class="clear-lead">只清理已结算的里程记录，进行中的场次不受影响；清理后日统计会自动重算。</p>
+
+        <el-radio-group v-model="clearScope" class="clear-scope">
+          <el-radio value="filter" :disabled="!hasFilter">
+            当前筛选范围
+            <span class="scope-meta">{{ filterDesc }} · {{ total }} 条</span>
+          </el-radio>
+          <el-radio value="all">
+            全部记录
+            <span class="scope-meta">所有日期 · {{ allTotal }} 条</span>
+          </el-radio>
+        </el-radio-group>
+
+        <p class="clear-tip">删除后无法撤销。想留底可以先到「关于 / 备份」导出备份，每天首次启动也会自动备份一份。</p>
+      </div>
+      <template #footer>
+        <el-button @click="clearVisible = false">取消</el-button>
+        <el-button
+          type="danger"
+          :loading="clearing"
+          :disabled="clearCount === 0"
+          @click="doClear"
+        >
+          清理 {{ clearCount }} 条
+        </el-button>
+      </template>
+    </el-dialog>
 
     <el-dialog
       v-model="detailVisible"
@@ -453,6 +556,56 @@ onMounted(presetToday)
   display: flex;
   justify-content: flex-end;
   margin-top: 14px;
+}
+/* ---- 清理记录 ---- */
+.clear-entry {
+  color: var(--text-secondary);
+}
+.clear-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.clear-lead {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+.clear-scope {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: var(--radius-control);
+  background: var(--surface-tray);
+  box-shadow: var(--elev-inset-sm);
+}
+.clear-scope :deep(.el-radio) {
+  display: flex;
+  width: 100%;
+  height: auto;
+  margin-right: 0;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.clear-scope :deep(.el-radio__input) {
+  margin-top: 2px;
+}
+.clear-scope :deep(.el-radio__label) {
+  line-height: 1.5;
+  white-space: normal;
+}
+.scope-meta {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.clear-tip {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.7;
 }
 /* ---- 详情弹窗 ---- */
 .detail-head {

@@ -495,6 +495,62 @@ recordRoutes.put('/:id', zValidator('json', editRecordSchema), async (c) => {
   return c.json(ok(null))
 })
 
+/* ---------- 批量清理记录 ---------- */
+
+const clearSchema = z.object({
+  all: z.enum(['true', 'false']).optional(),
+  startDate: dateStr.optional(),
+  endDate: dateStr.optional(),
+  keyword: z.string().optional()
+})
+
+/**
+ * 按「当前筛选条件」或「全部」清理已结算记录。
+ * 进行中（ACTIVE）的记录不会被清掉，避免打断正在跑的一场。
+ */
+recordRoutes.delete('/', zValidator('query', clearSchema), async (c) => {
+  const q = c.req.valid('query')
+  const all = q.all === 'true'
+  const keyword = q.keyword?.trim()
+  if (!all && !q.startDate && !q.endDate && !keyword) {
+    throw new ApiError(400, '请指定清理范围：日期区间、物品关键字，或全部清理')
+  }
+
+  const conds: SQL[] = [eq(mileageRecords.status, 'FINISHED')]
+  if (!all) {
+    if (q.startDate) conds.push(sql`${mileageRecords.belongDate} >= ${q.startDate}`)
+    if (q.endDate) conds.push(sql`${mileageRecords.belongDate} <= ${q.endDate}`)
+    if (keyword) {
+      conds.push(
+        sql`exists (select 1 from mileage_record_detail d where d.record_id = ${mileageRecords.id} and d.item_name like ${`%${keyword}%`})`
+      )
+    }
+  }
+
+  const rows = await db
+    .select({ id: mileageRecords.id, date: mileageRecords.belongDate })
+    .from(mileageRecords)
+    .where(and(...conds))
+  if (!rows.length) return c.json(ok({ deleted: 0 }))
+
+  const ids = rows.map((r) => r.id)
+  const dates = [...new Set(rows.map((r) => r.date))]
+
+  await db.transaction(async (tx) => {
+    // 分块，避免单条 SQL 的变量个数撞上 SQLite 上限
+    for (let i = 0; i < ids.length; i += 400) {
+      const chunk = ids.slice(i, i + 400)
+      await tx.delete(mileageRecordDetails).where(inArray(mileageRecordDetails.recordId, chunk))
+      await tx.delete(costRecords).where(inArray(costRecords.recordId, chunk))
+      await tx.delete(mileageRecords).where(inArray(mileageRecords.id, chunk))
+    }
+    // 被清空的那几天也要重算，否则日统计里会留下已经不存在的收益
+    for (const d of dates) await refreshDailyStats(tx, d)
+  })
+
+  return c.json(ok({ deleted: ids.length }))
+})
+
 /* ---------- 删除记录 ---------- */
 
 recordRoutes.delete('/:id', async (c) => {
