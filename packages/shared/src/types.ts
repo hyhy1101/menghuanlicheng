@@ -236,14 +236,18 @@ export interface UserSettingsDTO {
   closeToTray: boolean
 }
 
-/* ---------- 示例数据初始化 ---------- */
-export interface DemoInitResultDTO {
-  /** 是否清空了原有业务数据 */
-  reset: boolean
+/* ---------- 一键初始化（清空本地数据） ---------- */
+export interface DataResetResultDTO {
+  /** 清掉的服务器数 */
   servers: number
+  /** 清掉的号组数 */
   teams: number
+  /** 清掉的角色数 */
   roles: number
+  /** 清掉的里程记录数 */
   records: number
+  /** 清掉的物品价格条数 */
+  itemPrices: number
 }
 
 /* ---------- 统计 ---------- */

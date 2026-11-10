@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { profileApi, serverApi, settingsApi } from '../api/basic'
 import { teamsApi } from '../api/dashboard'
@@ -23,8 +23,25 @@ const serverDialog = reactive({
   cardPrice: 12800
 })
 
-const initDialog = reactive({ visible: false, reset: false })
+/** 倒计时秒数：给手滑和「先导出备份」留出反应时间 */
+const CONFIRM_SECONDS = 10
+/** 必须原样输入的字，挡掉一路回车清库 */
+const CONFIRM_TEXT = '我确认'
+
+const initDialog = reactive({ visible: false, input: '' })
+const countdown = ref(CONFIRM_SECONDS)
 const initializing = ref(false)
+const canConfirm = computed(
+  () => countdown.value === 0 && initDialog.input.trim() === CONFIRM_TEXT && !initializing.value
+)
+let countdownTimer: number | undefined
+
+function stopCountdown() {
+  if (countdownTimer !== undefined) {
+    window.clearInterval(countdownTimer)
+    countdownTimer = undefined
+  }
+}
 
 async function loadAll() {
   await app.ensureSettings()
@@ -35,9 +52,11 @@ async function loadAll() {
 
 async function loadProfile() {
   try {
-    const { data } = await profileApi.get()
-    profile.nickname = data.data.nickname
-    profile.avatar = assetUrl(data.data.avatar)
+    // 走 store：顶栏也跟着刷新
+    const p = await app.loadProfile(true)
+    if (!p) return
+    profile.nickname = p.nickname
+    profile.avatar = assetUrl(p.avatar)
   } catch {
     /* 忽略 */
   }
@@ -47,7 +66,8 @@ async function saveProfile() {
   const nickname = profile.nickname.trim()
   if (!nickname) return ElMessage.warning('昵称不能为空')
   try {
-    await profileApi.update({ nickname })
+    const { data } = await profileApi.update({ nickname })
+    app.setProfile(data.data)
     ElMessage.success('已保存')
   } catch (e) {
     ElMessage.error((e as Error).message)
@@ -142,25 +162,40 @@ async function patch(p: Record<string, unknown>) {
   }
 }
 
-/* ---------------- 示例数据 ---------------- */
+/* ---------------- 一键初始化 ---------------- */
 
 function openInit() {
-  initDialog.reset = false
+  stopCountdown()
+  initDialog.input = ''
+  countdown.value = CONFIRM_SECONDS
   initDialog.visible = true
+  countdownTimer = window.setInterval(() => {
+    countdown.value -= 1
+    if (countdown.value <= 0) stopCountdown()
+  }, 1000)
+}
+
+function closeInit() {
+  stopCountdown()
+  initDialog.visible = false
 }
 
 async function doInit() {
+  if (!canConfirm.value) return
   initializing.value = true
   try {
-    const { data } = await settingsApi.initDemo(initDialog.reset)
+    const { data } = await settingsApi.resetData()
     const r = data.data
-    initDialog.visible = false
+    closeInit()
     await loadAll()
     await loadProfile()
     const { data: next } = await settingsApi.get()
     app.setSettings(next.data)
+    const cleared = r.servers + r.teams + r.roles + r.records + r.itemPrices
     ElMessage.success(
-      `已初始化：${r.servers} 个服务器、${r.teams} 个号组、${r.roles} 个角色、${r.records} 条记录`
+      cleared > 0
+        ? `已清空：${r.servers} 个服务器、${r.teams} 个号组、${r.roles} 个角色、${r.records} 条记录`
+        : '本地本来就没有数据，已复位昵称与默认设置'
     )
   } catch (e) {
     ElMessage.error((e as Error).message)
@@ -178,6 +213,8 @@ async function toggleAutoLaunch(v: boolean) {
     ElMessage.error((e as Error).message)
   }
 }
+
+onBeforeUnmount(stopCountdown)
 
 onMounted(async () => {
   await Promise.all([loadAll(), loadProfile()])
@@ -279,32 +316,42 @@ onMounted(async () => {
 
     <section class="card">
       <div class="card-head">
-        <h3>示例数据</h3>
-        <el-button size="small" @click="openInit">一键初始化</el-button>
+        <h3>一键初始化</h3>
+        <el-button size="small" type="danger" plain @click="openInit">初始化</el-button>
       </div>
       <p class="hint">
-        生成 2 个服务器、3 个号组、15 个角色和最近两周的里程记录，用来快速看报表效果。
-        物品与活动不受影响。
+        清空服务器、号组、角色、里程记录与物品价格，昵称和头像复位，等于恢复出厂设置。
+        物品目录与活动规则保留。
       </p>
     </section>
 
-    <el-dialog v-model="initDialog.visible" title="一键初始化示例数据" width="480px">
+    <el-dialog
+      v-model="initDialog.visible"
+      title="一键初始化"
+      width="500px"
+      :close-on-click-modal="false"
+      @close="stopCountdown"
+    >
       <div class="init-body">
-        <p class="init-lead">会创建：</p>
+        <p class="init-lead">确定要从本机删除这些数据？</p>
         <ul class="init-list">
-          <li>2 个服务器（珍宝阁、紫禁城，含点卡单价）</li>
-          <li>3 个号组、15 个角色</li>
-          <li>最近两周的 15 条已结算里程记录和点卡成本</li>
+          <li>服务器（含点卡单价）、号组、角色</li>
+          <li>里程记录、明细、成本与每日统计</li>
+          <li>物品在各服务器上的价格</li>
+          <li>昵称恢复为「玩家」、头像清除、默认服务器与默认号组清空</li>
         </ul>
-        <el-checkbox v-model="initDialog.reset">清空现有服务器 / 号组 / 角色 / 记录后重建</el-checkbox>
         <p class="init-warn">
-          清空不可撤销，建议先在「关于 / 备份」导出备份。初始化后默认服务器与默认号组会指向示例数据。
+          不可撤销，建议先到「关于 / 备份」导出备份。物品目录、活动规则、托盘与开机自启等偏好不受影响。
         </p>
+        <div class="init-confirm">
+          <span class="init-label">输入 <code>{{ CONFIRM_TEXT }}</code> 才能点确定：</span>
+          <el-input v-model="initDialog.input" :placeholder="CONFIRM_TEXT" maxlength="10" />
+        </div>
       </div>
       <template #footer>
-        <el-button @click="initDialog.visible = false">取消</el-button>
-        <el-button :type="initDialog.reset ? 'danger' : 'primary'" :loading="initializing" @click="doInit">
-          {{ initDialog.reset ? '清空并初始化' : '开始初始化' }}
+        <el-button @click="closeInit">取消</el-button>
+        <el-button type="danger" :loading="initializing" :disabled="!canConfirm" @click="doInit">
+          {{ countdown > 0 ? `请稍等 ${countdown} 秒` : '确定清空' }}
         </el-button>
       </template>
     </el-dialog>
@@ -417,5 +464,14 @@ code {
   color: var(--text-muted);
   font-size: 12px;
   line-height: 1.6;
+}
+.init-confirm {
+  margin-top: 14px;
+}
+.init-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text-secondary);
+  font-size: 12px;
 }
 </style>

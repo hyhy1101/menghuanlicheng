@@ -22,6 +22,8 @@ function render() {
     .filter(Boolean)
     .join(', ')
   const accent = (alpha: number) => `rgba(${accentRgb}, ${alpha})`
+  // 一条记录都没有时 echarts 会把 0 拆成好几档，刻度全显示「0万」；换成一个固定上限
+  const hasData = props.points.some((p) => p.totalIncome !== 0 || p.netIncome !== 0)
   const accent400 = cssVar('--accent-400')
   const accent500 = cssVar('--accent-500')
   const positive = cssVar('--positive')
@@ -69,6 +71,7 @@ function render() {
     },
     yAxis: {
       type: 'value',
+      ...(hasData ? {} : { min: 0, max: 10000, interval: 10000 }),
       axisLabel: {
         color: textMuted,
         fontSize: 11,

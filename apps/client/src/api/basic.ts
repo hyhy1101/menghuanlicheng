@@ -1,7 +1,7 @@
 import { http } from './http'
 import type {
   ActivityOccurrenceDTO,
-  DemoInitResultDTO,
+  DataResetResultDTO,
   GameItemDTO,
   GameServerDTO,
   GameSourceDTO,
@@ -89,8 +89,8 @@ export const activityApi = {
 export const settingsApi = {
   get: () => http.get<UserSettingsDTO>('/settings'),
   update: (body: Partial<UserSettingsDTO>) => http.put<UserSettingsDTO>('/settings', body),
-  /** 一键初始化示例数据；reset = 清空现有服务器/号组/角色/记录后重建 */
-  initDemo: (reset = false) => http.post<DemoInitResultDTO>('/init-demo', { reset })
+  /** 一键初始化：清空服务器 / 号组 / 角色 / 记录 / 物品价格，并把档案与默认项复位 */
+  resetData: () => http.post<DataResetResultDTO>('/reset-data', {})
 }
 
 export const profileApi = {

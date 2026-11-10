@@ -1,17 +1,19 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted } from 'vue'
 import { RouterView, useRoute, useRouter } from 'vue-router'
 import { useThemeStore } from '../stores/theme'
 import { THEME_ACCENTS } from '../themes'
-import { profileApi } from '../api/basic'
+import { useAppStore } from '../stores/app'
 import { assetUrl } from '../utils/asset'
 
 const route = useRoute()
 const router = useRouter()
 const theme = useThemeStore()
+const app = useAppStore()
 
-const nickname = ref('玩家')
-const avatar = ref<string | null>(null)
+// 档案在 store 里，设置页改完昵称、或一键初始化复位后这里会立即跟着变
+const nickname = computed(() => app.profile?.nickname || '玩家')
+const avatar = computed(() => assetUrl(app.profile?.avatar ?? null))
 
 const navs = [
   { path: '/', label: '主页', icon: 'M3 11.5 12 4l9 7.5M5.5 10v9.5h13V10' },
@@ -54,14 +56,9 @@ function handleUserCommand(command: string) {
   if (command === 'settings' || command === 'about') void router.push(`/${command}`)
 }
 
-onMounted(async () => {
-  try {
-    const { data } = await profileApi.get()
-    nickname.value = data.data.nickname || '玩家'
-    avatar.value = assetUrl(data.data.avatar)
-  } catch {
-    /* 档案还没建好时用默认昵称 */
-  }
+onMounted(() => {
+  // 档案还没建好时 store 里是 null，模板会退回默认昵称
+  void app.loadProfile()
 })
 </script>
 
