@@ -3,6 +3,7 @@ import { computed, onMounted } from 'vue'
 import { RouterView, useRoute, useRouter } from 'vue-router'
 import { useThemeStore } from '../stores/theme'
 import { THEME_ACCENTS, THEME_STYLES } from '../themes'
+import type { ThemeStyle } from '../themes'
 import { useAppStore } from '../stores/app'
 import { assetUrl } from '../utils/asset'
 
@@ -48,12 +49,14 @@ const today = computed(() => {
 
 const initial = computed(() => (nickname.value || '玩')[0])
 
-// 两套固定配色的风格各自锁死显示模式与主题色，提示文案要跟着风格走
-const styleHint = computed(() =>
-  theme.style === 'glass'
-    ? '玻璃拟态按规范固定暗色与香槟金主色。'
-    : '柔和界面风按规范固定亮色与靛蓝主色。'
-)
+// 三套固定配色的风格各自锁死显示模式与主题色，提示文案要跟着风格走
+const STYLE_HINTS: Record<ThemeStyle, string> = {
+  neumorphic: '',
+  soft: '柔和界面风按规范固定亮色与靛蓝主色。',
+  glass: '玻璃拟态按规范固定暗色与香槟金主色。',
+  playful: '俏皮野兽派按规范固定亮色与珊瑚红主色。'
+}
+const styleHint = computed(() => STYLE_HINTS[theme.style])
 
 function goRecord() {
   void router.push('/record')
@@ -104,7 +107,7 @@ onMounted(() => {
 
       <span class="date">{{ today }}</span>
 
-      <el-popover trigger="click" :width="300" popper-class="theme-pop">
+      <el-popover trigger="click" :width="340" popper-class="theme-pop">
         <template #reference>
           <button class="theme-btn" title="主题设置">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
@@ -489,6 +492,8 @@ html.dark .nav-item.on {
 /* ===== 主题设置面板：界面风格切换（两种风格下都要好看） ===== */
 .style-opts {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 6px;
 }
 .style-opt {
@@ -802,6 +807,203 @@ html[data-style='glass'] .theme-hint {
   html[data-style='glass'] .btn-record:hover,
   html[data-style='glass'] .user-box,
   html[data-style='glass'] .theme-btn {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* ============================================================================
+   主题四：俏皮野兽派 —— 顶栏与导航
+
+   顶栏是一块白板压在页面顶上，靠 4px 黑边和底影划分边界。导航项平时是纯文字，
+   悬停铺阳光黄，当前页才长出黑框 + 珊瑚硬影——整条顶栏只有主行动一枚倾斜的
+   珊瑚方块，符合「同屏最多四种强调色」的克制。
+   ============================================================================ */
+html[data-style='playful'] .topbar {
+  background: #fff;
+  border-bottom: 4px solid #000;
+  box-shadow: none;
+}
+html[data-style='playful'] .logo-badge {
+  border: 4px solid #000;
+  border-radius: 0;
+  background: #ffe66d;
+  color: #000;
+  box-shadow: 4px 4px 0 #000;
+}
+html[data-style='playful'] .logo-name {
+  color: #000;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+html[data-style='playful'] .logo-sub {
+  color: #000;
+  font-weight: 700;
+}
+/* 边框常驻（透明时仍占位），避免当前页切换时导航条高度跳动 */
+html[data-style='playful'] .nav-item {
+  border: 3px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: #000;
+  font-weight: 700;
+  box-shadow: none;
+  transition:
+    background-color var(--dur-2) ease,
+    box-shadow var(--dur-3) var(--ease-out),
+    transform var(--dur-3) var(--ease-out);
+}
+html[data-style='playful'] .nav-item:hover {
+  background: #ffe66d;
+  border-color: #000;
+  color: #000;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #000;
+}
+html[data-style='playful'] .nav-item:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+html[data-style='playful'] .nav-item.on,
+html[data-style='playful'] .nav-item.on:active {
+  background: #fff;
+  border-color: #000;
+  color: #000;
+  font-weight: 900;
+  transform: none;
+  box-shadow: 3px 3px 0 #ff6b6b;
+}
+/* 当前页的圆点指示灯不属于这套风格，边界已经由黑框说清楚了 */
+html[data-style='playful'] .nav-item.on::after {
+  display: none;
+}
+html[data-style='playful'] .date {
+  color: #000;
+  font-weight: 700;
+}
+/* 主行动：珊瑚方块、4px 黑边、6px 薄荷硬影，静置 -2 度 */
+html[data-style='playful'] .btn-record {
+  border: 4px solid #000;
+  border-radius: 0;
+  background: #ff6b6b;
+  color: #fff;
+  font-weight: 900;
+  box-shadow: 6px 6px 0 #4ecdc4;
+  transform: rotate(-2deg);
+  transition:
+    transform var(--dur-3) var(--ease-out),
+    box-shadow var(--dur-3) var(--ease-out),
+    background-color var(--dur-2) ease;
+}
+html[data-style='playful'] .btn-record:hover {
+  background: #ff6b6b;
+  color: #fff;
+  transform: translate(-1px, -4px) rotate(3deg);
+  box-shadow: 8px 8px 0 #ffe66d;
+}
+html[data-style='playful'] .btn-record:active {
+  background: #f04f4f;
+  color: #fff;
+  transform: translate(6px, 6px) scale(0.95) rotate(0deg);
+  box-shadow: none;
+}
+html[data-style='playful'] .user-box {
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 0;
+  box-shadow: 4px 4px 0 #000;
+  transition:
+    box-shadow var(--dur-3) var(--ease-out),
+    transform var(--dur-3) var(--ease-out);
+}
+html[data-style='playful'] .user-box:hover {
+  transform: translate(-1px, -2px);
+  box-shadow: 6px 6px 0 #000;
+}
+html[data-style='playful'] .user-name {
+  color: #000;
+  font-weight: 700;
+}
+html[data-style='playful'] .avatar {
+  border: 3px solid #000;
+  color: #000 !important;
+  background: #ffe66d !important;
+  font-weight: 900;
+  box-shadow: none;
+}
+html[data-style='playful'] .theme-btn {
+  border: 3px solid #000;
+  border-radius: 0;
+  background: #fff;
+  color: #000;
+  box-shadow: 3px 3px 0 #000;
+  transition:
+    transform var(--dur-3) var(--ease-out),
+    box-shadow var(--dur-3) var(--ease-out),
+    background-color var(--dur-2) ease;
+}
+html[data-style='playful'] .theme-btn:hover {
+  background: #ffe66d;
+  color: #000;
+  transform: translate(-1px, -2px);
+  box-shadow: 5px 5px 0 #000;
+}
+html[data-style='playful'] .theme-btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: none;
+}
+/* 面板里的风格选项：黑框小方块，选中是珊瑚实心 */
+/* 四枚主题块排成 2×2：野兽派每块都要带黑框，挤成一行会掉一颗到第二行 */
+html[data-style='playful'] .style-opts {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  justify-content: stretch;
+  gap: 6px;
+}
+html[data-style='playful'] .style-opt {
+  text-align: center;
+  border: 2px solid #000;
+  border-radius: 0;
+  background: #fff;
+  color: #000;
+  font-weight: 700;
+  box-shadow: 2px 2px 0 #000;
+  transition:
+    transform var(--dur-3) var(--ease-out),
+    box-shadow var(--dur-3) var(--ease-out),
+    background-color var(--dur-2) ease;
+}
+html[data-style='playful'] .style-opt:hover {
+  background: #ffe66d;
+  color: #000;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #000;
+}
+html[data-style='playful'] .style-opt.on {
+  background: #ff6b6b;
+  color: #fff;
+  font-weight: 900;
+  box-shadow: 3px 3px 0 #000;
+}
+html[data-style='playful'] .theme-label {
+  color: #000;
+  font-weight: 700;
+}
+html[data-style='playful'] .theme-hint {
+  color: #000;
+  font-weight: 600;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-style='playful'] .nav-item,
+  html[data-style='playful'] .nav-item:hover,
+  html[data-style='playful'] .nav-item:active,
+  html[data-style='playful'] .user-box:hover,
+  html[data-style='playful'] .theme-btn:hover,
+  html[data-style='playful'] .style-opt:hover,
+  html[data-style='playful'] .btn-record,
+  html[data-style='playful'] .btn-record:hover,
+  html[data-style='playful'] .btn-record:active {
     transition: none;
     transform: none;
   }

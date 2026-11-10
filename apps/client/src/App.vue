@@ -506,6 +506,122 @@ html[data-style='glass'] {
   --scroll-thumb-hover: rgba(255, 255, 255, 0.3);
 }
 
+/* ============================================================================
+   主题四：俏皮野兽派（playful）
+
+   骨架是野兽派：4px 纯黑描边、零圆角、零模糊的偏移硬阴影，一个像素都不许软。
+   俏皮来自三件事——五支糖果色、元素允许 -2~3 度的倾斜、300ms 带回弹的弹簧曲线。
+
+   颜色分工：珊瑚红是主行动，薄荷做第二阴影与链接，阳光黄只负责悬停高亮与角标，
+   海沫色和蜜桃色留给分类与状态。同屏最多三种强调色，由组件层控制出场频率。
+
+   只做亮色：规范只给了一套白底取值，切到主题四时显示模式锁在亮色（见 theme store）。
+   本块必须排在 html.dark 与 data-accent 之后 —— 选择器权重相同，靠顺序压住它们。
+   ============================================================================ */
+html[data-style='playful'] {
+  /* 表面：页面与卡片都是纯白，层级完全交给黑边和硬阴影 */
+  --base: #ffffff;
+  --shade: #000000;
+  --glow: #ffffff;
+  --tint: #fff3bf;
+  --sunken: #ffffff;
+
+  --surface-page: #ffffff;
+  --surface-card: #ffffff;
+  /* 托盘 / 行悬停：阳光黄的淡底，是这套风格里唯一允许的大面积彩色 */
+  --surface-tray: #fff3bf;
+  --surface-sunken: #ffffff;
+
+  /* 文字：只有黑，层级靠字号和字重，不用柔和灰（规范里明确排除） */
+  --n-0: #ffffff;
+  --n-50: #ffffff;
+  --n-100: #ffffff;
+  --n-200: #ffffff;
+  --n-300: #000000;
+  --n-400: #000000;
+  --n-500: #000000;
+  --n-600: #000000;
+  --n-700: #000000;
+  --n-800: #000000;
+  --n-900: #000000;
+  --n-950: #000000;
+
+  --ink-1: #000000;
+  --ink-2: #000000;
+  --ink-3: #1a1a1a;
+  --ink-4: #3d3d3d;
+
+  --line-control: #000000;
+  --line-separator: #000000;
+  --line-focus: #000000;
+
+  /* 阴影：一律零模糊的偏移色块。薄荷是静置，珊瑚是悬停，阳光黄是按钮悬停 */
+  --elev-raised: 8px 8px 0 #4ecdc4;
+  --elev-raised-lg: 10px 10px 0 #4ecdc4;
+  --elev-raised-sm: 5px 5px 0 #4ecdc4;
+  --elev-raised-xs: 3px 3px 0 #4ecdc4;
+  --elev-hover: 12px 12px 0 #ff6b6b;
+  /* 野兽派没有「凹陷」语义：按下就是把位移走完、阴影归零（见组件层）。
+     下沉语义的旧值是一层半透明灰影，与「不用柔和灰」的规范冲突，这里直接清空，
+     需要分界的下沉面改由组件层的 2px 黑框承担。 */
+  --elev-inset: none;
+  --elev-inset-sm: none;
+  --elev-well: none;
+  --elev-pressed: none;
+  --elev-float: 12px 12px 0 #000000;
+  --scrim: rgba(0, 0, 0, 0.45);
+
+  /* 状态色：填充用糖果色，文字压深一档保证白底可读 */
+  --positive: #0b7a6d;
+  --positive-rgb: 78 205 196;
+  --negative: #c53030;
+  --negative-rgb: 255 107 107;
+  --warning: #8a5a00;
+  --warning-rgb: 255 230 109;
+  --info: #1f5fa8;
+  --info-rgb: 149 225 211;
+
+  /* 品牌：珊瑚红，压在白底上的唯一主行动色 */
+  --accent-rgb: 255 107 107;
+  --accent-400: #ff8d8d;
+  --accent-500: #ff6b6b;
+  --accent-600: #f04f4f;
+  --ink-accent: #d43b3b;
+  --accent-glow: rgba(255, 107, 107, 0.35);
+  --on-accent: #ffffff;
+  --btn-accent-bg: var(--accent-500);
+
+  /* 形状：全站零圆角，滚动条和「胶囊」也不例外 */
+  --radius-card: 0;
+  --radius-control: 0;
+  --radius-pill: 0;
+
+  /* 字体：标题压到 900 与 1.1 行高，让字块像方块 */
+  --text-title-1: 900 30px / 1.1 var(--sans-font);
+  --text-title-2: 900 22px / 1.15 var(--sans-font);
+  --text-title-3: 800 18px / 1.2 var(--sans-font);
+  --text-headline: 800 16px / 1.35 var(--sans-font);
+  --text-body-lg: 600 16px / 1.55 var(--sans-font);
+  --text-body: 600 14px / 1.55 var(--sans-font);
+  --text-body-2: 600 13px / 1.5 var(--sans-font);
+  --text-caption-1: 600 12px / 1.4 var(--sans-font);
+  --text-caption-2: 600 11px / 1.4 var(--sans-font);
+  --text-label: 700 12px / 1.35 var(--sans-font);
+  --tracking-tight: -0.02em;
+  --tracking-label: 0.04em;
+
+  /* 动效：一条带回弹的弹簧曲线贯穿全站，300ms */
+  --dur-2: 200ms;
+  --dur-3: 300ms;
+  --dur-4: 300ms;
+  --ease-out: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-modal: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --bg-grid: rgba(0, 0, 0, 0.04);
+  --scroll-thumb: #000000;
+  --scroll-thumb-hover: #000000;
+}
+
 /* 物品价格分级：四档改用状态色系，避开与品牌色撞色 */
 .tier-w {
   color: var(--info);
@@ -1826,6 +1942,687 @@ html[data-style='glass'] {
   --el-bg-color-overlay: #131e30;
 }
 
+/* ============================================================================
+   主题四：组件层改写
+
+   新拟物和柔和风都靠阴影的「软」表达层级，野兽派靠「黑边 + 硬影 + 位移」，
+   所以这里不能只换令牌：描边要真 4px，阴影要零模糊，按下要真的走完位移。
+   旋转只给主按钮，一屏最多四枚倾斜元素（规范上限），其余元素保持水平。
+
+   所有位移用 transform，不占布局；4px 描边配合全局 box-sizing: border-box，
+   控件总尺寸与其它主题一致，切主题不会重排。
+   ============================================================================ */
+
+/* 卡片：白面、4px 黑边、8px 薄荷硬影；悬停抬起 8px、转 1 度、阴影换珊瑚 */
+html[data-style='playful'] .card,
+html[data-style='playful'] .panel {
+  background: var(--surface-card);
+  border: 4px solid #000;
+  border-radius: 0;
+  box-shadow: 8px 8px 0 #4ecdc4;
+  transition:
+    transform var(--dur-3) var(--ease-out),
+    box-shadow var(--dur-3) var(--ease-out);
+}
+html[data-style='playful'] .card:hover {
+  transform: translateY(-8px) rotate(1deg);
+  box-shadow: 12px 12px 0 #ff6b6b;
+}
+
+/* 各页自己的卡片类不在 .card 里（号组卡、开局卡、活动表、物品表），
+   不补的话它们只剩一层薄荷影子、没有黑框，看起来像描边错位 */
+html[data-style='playful'] .team-card,
+html[data-style='playful'] .start-card,
+html[data-style='playful'] .tbl,
+html[data-style='playful'] .tbl-wrap {
+  background: var(--surface-card);
+  border: 4px solid #000;
+  border-radius: 0;
+  box-shadow: 8px 8px 0 #4ecdc4;
+}
+html[data-style='playful'] .team-card {
+  transition:
+    transform var(--dur-3) var(--ease-out),
+    box-shadow var(--dur-3) var(--ease-out);
+}
+html[data-style='playful'] .team-card:hover {
+  transform: translateY(-8px) rotate(1deg);
+  box-shadow: 12px 12px 0 #ff6b6b;
+}
+/* 新建号组是「虚线空位」，用虚线黑框 + 阳光黄硬影区分于实体卡片 */
+html[data-style='playful'] .team-card.empty-card {
+  border: 4px dashed #000;
+  box-shadow: 8px 8px 0 #ffe66d;
+}
+html[data-style='playful'] .team-card.empty-card:hover {
+  border-color: #ff6b6b;
+  color: #000;
+  box-shadow: 12px 12px 0 #ff6b6b;
+}
+
+/* 二级面：快捷入口、今日活动行，比卡片薄一档（3px 框 + 阳光黄硬影） */
+html[data-style='playful'] .quick,
+html[data-style='playful'] .activity {
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 0;
+  color: #000;
+  box-shadow: 4px 4px 0 #ffe66d;
+}
+html[data-style='playful'] .quick:hover,
+html[data-style='playful'] .activity:hover {
+  background: #fff;
+  border-color: #000;
+  color: #000;
+  transform: translate(-1px, -2px);
+  box-shadow: 6px 6px 0 #ff6b6b;
+}
+html[data-style='playful'] .quick:active,
+html[data-style='playful'] .activity:active {
+  transform: translate(3px, 3px);
+  box-shadow: none;
+}
+
+/* 三级面：卡片内的信息格（周日历列、明细小格、号组小格），只有 2px 黑框，不投影 */
+html[data-style='playful'] .day-col,
+html[data-style='playful'] .t-item,
+html[data-style='playful'] .ts-item,
+html[data-style='playful'] .next {
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* 零圆角：各页自绘的小面把半径写死成 px 值，这里统一压平 */
+html[data-style='playful'] .rank,
+html[data-style='playful'] .team-badge,
+html[data-style='playful'] .occ,
+html[data-style='playful'] .af-chip,
+html[data-style='playful'] .activity-row,
+html[data-style='playful'] .cat-tab,
+html[data-style='playful'] .grid-item,
+html[data-style='playful'] .grid-icon,
+html[data-style='playful'] .g-icon,
+html[data-style='playful'] .ctx-tag,
+html[data-style='playful'] .timer-box,
+html[data-style='playful'] .start-badge,
+html[data-style='playful'] .start-pending,
+html[data-style='playful'] .start-empty,
+html[data-style='playful'] .gain-row,
+html[data-style='playful'] .a-badge,
+html[data-style='playful'] .kv,
+html[data-style='playful'] .icon,
+html[data-style='playful'] .dot {
+  border-radius: 0;
+}
+
+/* 自绘图标徽章：原实现是渐变底 + 内发光 / 彩色柔光，改成实色块 + 黑框 */
+html[data-style='playful'] .start-badge,
+html[data-style='playful'] .team-badge,
+html[data-style='playful'] .g-icon,
+html[data-style='playful'] .grid-icon {
+  background: #ffd9d9;
+  border: 2px solid #000;
+  border-radius: 0;
+  color: #000;
+  box-shadow: none;
+}
+html[data-style='playful'] .brand-badge {
+  background: var(--accent-500);
+  border: 3px solid #000;
+  border-radius: 0;
+  color: #fff;
+  box-shadow: 3px 3px 0 #000;
+}
+/* 卡片内的一级分隔线统一 3px 黑线，1px 太细，读不出野兽派的骨架 */
+html[data-style='playful'] .start-head,
+html[data-style='playful'] .card-head,
+html[data-style='playful'] .panel-head {
+  border-bottom: 3px solid #000;
+}
+
+/* 浮层：黑框 + 黑色硬影，不用圆角与模糊 */
+html[data-style='playful'] .el-dialog,
+html[data-style='playful'] .el-message-box {
+  background: #fff;
+  border: 4px solid #000;
+  border-radius: 0;
+  box-shadow: 12px 12px 0 #000;
+}
+html[data-style='playful'] .el-overlay {
+  background-color: rgba(0, 0, 0, 0.45);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+html[data-style='playful'] .el-popper.is-light,
+html[data-style='playful'] .el-popper.is-dark {
+  background: #fff;
+  border: 4px solid #000;
+  border-radius: 0;
+  box-shadow: 6px 6px 0 #000;
+  color: #000;
+}
+html[data-style='playful'] .el-popper.is-dark {
+  background: #000;
+  color: #fff;
+  border-color: #000;
+  box-shadow: 4px 4px 0 #ffe66d;
+}
+/* 箭头要么被黑框切出缺口，要么太小配不上 4px 描边：直接不要 */
+html[data-style='playful'] .el-popper__arrow {
+  display: none;
+}
+html[data-style='playful'] .el-notification,
+html[data-style='playful'] .el-message {
+  background: #fff;
+  border: 4px solid #000;
+  border-radius: 0;
+  box-shadow: 6px 6px 0 #000;
+}
+html[data-style='playful'] .el-message--error {
+  box-shadow: 6px 6px 0 #ff6b6b;
+}
+html[data-style='playful'] .el-message--success {
+  box-shadow: 6px 6px 0 #4ecdc4;
+}
+html[data-style='playful'] .el-dropdown-menu__item:not(.is-disabled):hover,
+html[data-style='playful'] .el-dropdown-menu__item:not(.is-disabled):focus,
+html[data-style='playful'] .el-select-dropdown__item.is-hovering {
+  background: #ffe66d;
+  color: #000;
+}
+html[data-style='playful'] .el-select-dropdown__item.is-selected {
+  background: #4ecdc4;
+  color: #000;
+  font-weight: 700;
+}
+html[data-style='playful'] .el-loading-mask {
+  background-color: rgba(255, 255, 255, 0.82);
+}
+
+/* 按钮：普通按钮是白面黑框 + 黑色硬影；按下走完位移、阴影归零 */
+html[data-style='playful'] .el-button {
+  background: #fff;
+  border: 4px solid #000;
+  border-radius: 0;
+  color: #000;
+  font-weight: 700;
+  box-shadow: 4px 4px 0 #000;
+  transition:
+    transform var(--dur-3) var(--ease-out),
+    box-shadow var(--dur-3) var(--ease-out),
+    background-color var(--dur-2) ease;
+}
+html[data-style='playful'] .el-button:not(.is-disabled):not(.is-link):not(.is-text):not(.btn-ghost):hover {
+  background: #fff3bf;
+  border-color: #000;
+  color: #000;
+  transform: translate(-1px, -3px);
+  box-shadow: 6px 6px 0 #000;
+}
+html[data-style='playful'] .el-button:not(.is-disabled):not(.is-link):not(.is-text):not(.btn-ghost):active {
+  transform: translate(4px, 4px) scale(0.97);
+  box-shadow: none;
+}
+html[data-style='playful'] .el-button.is-disabled,
+html[data-style='playful'] .el-button.is-disabled:hover {
+  background: #fff;
+  border-color: #000;
+  color: #3d3d3d;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+  opacity: 1;
+}
+html[data-style='playful'] .el-button--primary:not(.is-link):not(.is-text) {
+  background: var(--accent-500);
+  border-color: #000;
+  color: #fff;
+  font-weight: 900;
+  box-shadow: 6px 6px 0 #4ecdc4;
+  /* 主按钮是这套风格里唯一允许常驻倾斜的元素 */
+  transform: rotate(-2deg);
+}
+html[data-style='playful'] .el-button--primary:not(.is-link):not(.is-text):not(.is-disabled):hover {
+  background: var(--accent-500);
+  border-color: #000;
+  color: #fff;
+  transform: translate(-1px, -4px) rotate(3deg);
+  box-shadow: 8px 8px 0 #ffe66d;
+}
+html[data-style='playful'] .el-button--primary:not(.is-link):not(.is-text):not(.is-disabled):active {
+  background: var(--accent-600);
+  border-color: #000;
+  color: #fff;
+  transform: translate(6px, 6px) scale(0.95) rotate(0deg);
+  box-shadow: none;
+}
+html[data-style='playful'] .el-button--primary.is-disabled {
+  background: #ffd0d0;
+  border-color: #000;
+  color: #fff;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+  transform: none;
+}
+html[data-style='playful'] .el-button--danger:not(.is-link):not(.is-text) {
+  background: #e5484d;
+  border-color: #000;
+  color: #fff;
+  box-shadow: 6px 6px 0 #000;
+}
+html[data-style='playful'] .el-button--danger:not(.is-link):not(.is-text):not(.is-disabled):hover {
+  background: #e5484d;
+  border-color: #000;
+  color: #fff;
+  transform: translate(-1px, -4px);
+  box-shadow: 8px 8px 0 #ffe66d;
+}
+html[data-style='playful'] .el-button--danger:not(.is-link):not(.is-text):not(.is-disabled):active {
+  background: #c53030;
+  border-color: #000;
+  color: #fff;
+  transform: translate(6px, 6px) scale(0.95);
+  box-shadow: none;
+}
+/* 文字按钮不能带黑框，否则会把「全部」这类链接撑成方块 */
+html[data-style='playful'] .el-button.is-link,
+html[data-style='playful'] .el-button.is-text {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #000;
+  font-weight: 700;
+  transform: none;
+}
+html[data-style='playful'] .el-button.is-link:hover,
+html[data-style='playful'] .el-button.is-text:hover {
+  background: #ffe66d;
+  color: #000;
+  box-shadow: none;
+  transform: none;
+}
+
+/* 页面自绘按钮：原实现是渐变 + 彩色柔光，野兽派要换成实色 + 黑框 + 硬影 */
+html[data-style='playful'] .btn-gold,
+html[data-style='playful'] .btn-start,
+html[data-style='playful'] .btn-end,
+html[data-style='playful'] .btn-primary,
+html[data-style='playful'] .start-btn {
+  background: var(--accent-500);
+  border: 4px solid #000;
+  border-radius: 0;
+  color: #fff;
+  font-weight: 900;
+  box-shadow: 6px 6px 0 #4ecdc4;
+}
+html[data-style='playful'] .btn-gold:not(:disabled):hover,
+html[data-style='playful'] .btn-start:not(:disabled):hover,
+html[data-style='playful'] .btn-end:not(:disabled):hover,
+html[data-style='playful'] .btn-primary:not(:disabled):hover,
+html[data-style='playful'] .start-btn:not(:disabled):hover {
+  background: var(--accent-500);
+  color: #fff;
+  transform: translate(-1px, -4px) rotate(3deg);
+  box-shadow: 8px 8px 0 #ffe66d;
+}
+html[data-style='playful'] .btn-gold:not(:disabled):active,
+html[data-style='playful'] .btn-start:not(:disabled):active,
+html[data-style='playful'] .btn-end:not(:disabled):active,
+html[data-style='playful'] .btn-primary:not(:disabled):active,
+html[data-style='playful'] .start-btn:not(:disabled):active {
+  background: var(--accent-600);
+  color: #fff;
+  transform: translate(6px, 6px) scale(0.95);
+  box-shadow: none;
+}
+
+/* 次要按钮（暂停、删除这类）：2px 细黑框，不再叠 4px 粗框和硬影 */
+html[data-style='playful'] .btn-ghost {
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 0;
+  color: #000;
+  font-weight: 700;
+  box-shadow: none;
+}
+html[data-style='playful'] .btn-ghost:not(:disabled):hover {
+  background: #ffe66d;
+  color: #000;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #000;
+}
+html[data-style='playful'] .btn-ghost:not(:disabled):active {
+  background: #ffe66d;
+  color: #000;
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+/* 记录页的「添加活动」虚线胶囊：保留虚线语义，改成黑虚线小方块 */
+html[data-style='playful'] .btn-activity {
+  background: #fff;
+  border: 2px dashed #000;
+  border-radius: 0;
+  color: #000;
+  font-weight: 700;
+}
+html[data-style='playful'] .btn-activity:hover {
+  background: #ffe66d;
+  border-color: #000;
+  color: #000;
+}
+
+/* 输入：白底、4px 黑框、零圆角；聚焦加薄荷硬影，尺寸不变 */
+html[data-style='playful'] .el-input__wrapper,
+html[data-style='playful'] .el-select__wrapper,
+html[data-style='playful'] .el-range-editor.el-input__wrapper {
+  background-color: #fff !important;
+  border: 4px solid #000;
+  border-radius: 0;
+  padding: 0 12px;
+  box-shadow: none !important;
+  transition:
+    box-shadow var(--dur-3) var(--ease-out),
+    border-color var(--dur-2) ease;
+}
+html[data-style='playful'] .el-textarea__inner {
+  background-color: #fff !important;
+  border: 4px solid #000;
+  border-radius: 0;
+  padding: 8px 12px;
+  box-shadow: none !important;
+  font-weight: 600;
+  transition:
+    box-shadow var(--dur-3) var(--ease-out),
+    border-color var(--dur-2) ease;
+}
+html[data-style='playful'] .el-input__wrapper:hover,
+html[data-style='playful'] .el-select__wrapper:hover,
+html[data-style='playful'] .el-textarea__inner:hover {
+  box-shadow: 3px 3px 0 #ffe66d !important;
+}
+html[data-style='playful'] .el-input__wrapper.is-focus,
+html[data-style='playful'] .el-select__wrapper.is-focused,
+html[data-style='playful'] .el-textarea__inner:focus {
+  border-color: #000;
+  box-shadow: 4px 4px 0 #4ecdc4 !important;
+}
+html[data-style='playful'] .el-input__wrapper.is-error,
+html[data-style='playful'] .el-textarea__inner.is-error,
+html[data-style='playful'] .el-form-item.is-error .el-input__wrapper {
+  border-color: #ff6b6b;
+  box-shadow: 4px 4px 0 #ff6b6b !important;
+}
+html[data-style='playful'] .el-input.is-disabled .el-input__wrapper,
+html[data-style='playful'] .el-select__wrapper.is-disabled {
+  background-color: #fff !important;
+  border-color: #000;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.25) !important;
+  opacity: 0.6;
+}
+html[data-style='playful'] .el-input__inner,
+html[data-style='playful'] .el-textarea__inner,
+html[data-style='playful'] .el-select__selected-item {
+  color: #000;
+  font-weight: 600;
+}
+html[data-style='playful'] .el-input__inner::placeholder,
+html[data-style='playful'] .el-textarea__inner::placeholder {
+  color: #3d3d3d;
+}
+html[data-style='playful'] .el-input-number__decrease,
+html[data-style='playful'] .el-input-number__increase {
+  background: #fff3bf;
+  border-color: #000;
+  color: #000;
+}
+
+/* 表格：横向 2px 黑线，表头再压一条 4px；行悬停是阳光黄 */
+html[data-style='playful'] .el-table th.el-table__cell {
+  background: #fff;
+  color: #000;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  border-bottom: 4px solid #000;
+}
+html[data-style='playful'] .el-table td.el-table__cell {
+  border-bottom: 2px solid #000;
+  font-weight: 600;
+}
+html[data-style='playful'] .el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell {
+  background: #ffe66d;
+}
+html[data-style='playful'] .el-table__empty-text {
+  color: #000;
+}
+
+/* 开关：黑框方轨 + 黑色方块旋钮，选中是薄荷。
+   基础层给轨道写了 !important（新拟物要盖掉 EP 默认色），这里必须同样加，
+   否则野兽派的黑框和薄荷选中态会被基础层压回去。 */
+html[data-style='playful'] .el-switch {
+  --el-switch-height: 24px;
+}
+html[data-style='playful'] .el-switch__core {
+  background: #fff !important;
+  border: 3px solid #000 !important;
+  border-radius: 0;
+  box-shadow: none;
+}
+html[data-style='playful'] .el-switch.is-checked .el-switch__core {
+  background: #4ecdc4 !important;
+  border-color: #000 !important;
+}
+/* EP 的旋钮按 1px 边框算位移，描边加粗后会溢出轨道，所以旋钮改成轨道自己的方块 */
+html[data-style='playful'] .el-switch__core {
+  position: relative;
+}
+html[data-style='playful'] .el-switch__core .el-switch__action {
+  display: none;
+}
+html[data-style='playful'] .el-switch__core::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 3px;
+  width: 10px;
+  height: 10px;
+  background: #000;
+  transform: translateY(-50%);
+}
+html[data-style='playful'] .el-switch.is-checked .el-switch__core::after {
+  left: auto;
+  right: 3px;
+  background: #fff;
+}
+html[data-style='playful'] .el-switch__core .el-switch__inner-wrapper {
+  color: #000;
+  font-weight: 700;
+}
+html[data-style='playful'] .el-switch.is-checked .el-switch__core .el-switch__inner-wrapper {
+  color: #000;
+}
+/* 头像：圆形头像框在野兽派里一律切方 */
+html[data-style='playful'] .el-avatar,
+html[data-style='playful'] .el-avatar--circle {
+  border-radius: 0;
+}
+
+/* 复选：方形黑框，选中珊瑚填充 + 白勾；单选仍是圆（规范里图标允许 999px） */
+html[data-style='playful'] .el-checkbox__inner {
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 0;
+}
+html[data-style='playful'] .el-radio__inner {
+  background: #fff;
+  border: 3px solid #000;
+}
+html[data-style='playful'] .el-checkbox__input.is-checked .el-checkbox__inner {
+  background: #ff6b6b;
+  border-color: #000;
+}
+html[data-style='playful'] .el-checkbox__inner::after {
+  border-color: #fff;
+  border-width: 2px;
+}
+html[data-style='playful'] .el-radio__input.is-checked .el-radio__inner {
+  background: #ffe66d;
+  border-color: #000;
+}
+html[data-style='playful'] .el-radio__input.is-checked .el-radio__inner::after {
+  background: #000;
+}
+html[data-style='playful'] .el-checkbox__label,
+html[data-style='playful'] .el-radio__label {
+  color: #000;
+  font-weight: 600;
+}
+
+/* 分段控件与单选按钮组：黑框方槽，选中是实心珊瑚 */
+html[data-style='playful'] .el-segmented {
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 0;
+  padding: 3px;
+}
+html[data-style='playful'] .el-segmented__item-selected {
+  background: #ff6b6b;
+  border-radius: 0;
+}
+html[data-style='playful'] .el-segmented__item.is-selected {
+  color: #fff;
+  font-weight: 900;
+}
+html[data-style='playful'] .el-radio-button__inner {
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 0;
+  color: #000;
+  font-weight: 700;
+  box-shadow: none;
+}
+html[data-style='playful'] .el-radio-button__original-radio:checked + .el-radio-button__inner {
+  background: #ff6b6b;
+  border-color: #000;
+  color: #fff;
+  box-shadow: none;
+}
+
+/* 分页：一排小方块，当前页珊瑚 */
+html[data-style='playful'] .el-pagination.is-background .el-pager li,
+html[data-style='playful'] .el-pagination.is-background .btn-prev,
+html[data-style='playful'] .el-pagination.is-background .btn-next {
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 0;
+  color: #000;
+  font-weight: 700;
+}
+html[data-style='playful'] .el-pagination.is-background .el-pager li.is-active {
+  background: #ff6b6b;
+  border-color: #000;
+  color: #fff;
+}
+/* 物品页的分页不是 background 模式，默认只有数字；这里补成同一排小方块 */
+html[data-style='playful'] .el-pagination:not(.is-background) .el-pager li,
+html[data-style='playful'] .el-pagination:not(.is-background) .btn-prev,
+html[data-style='playful'] .el-pagination:not(.is-background) .btn-next {
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 0;
+  color: #000;
+  font-weight: 700;
+}
+html[data-style='playful'] .el-pagination:not(.is-background) .el-pager li.is-active {
+  background: #ff6b6b;
+  border-color: #000;
+  color: #fff;
+}
+
+/* 标签：彩色填充 + 2px 黑边，零圆角 */
+html[data-style='playful'] .el-tag {
+  border: 2px solid #000;
+  border-radius: 0;
+  font-weight: 700;
+  background: #fff;
+  color: #000;
+}
+html[data-style='playful'] .el-tag--primary {
+  background: #ffd9d9;
+  color: #000;
+}
+html[data-style='playful'] .el-tag--success {
+  background: #d3f6f1;
+  color: #000;
+}
+html[data-style='playful'] .el-tag--danger {
+  background: #ffd3d3;
+  color: #000;
+}
+html[data-style='playful'] .el-tag--warning {
+  background: #fff3bf;
+  color: #000;
+}
+html[data-style='playful'] .el-tag--info {
+  background: #d9f2ee;
+  color: #000;
+}
+
+/* 其它小件 */
+html[data-style='playful'] .el-divider {
+  border-color: #000;
+}
+html[data-style='playful'] .el-form-item__label {
+  color: #000;
+  font-weight: 700;
+}
+html[data-style='playful'] .el-empty__description p {
+  color: #000;
+  font-weight: 600;
+}
+html[data-style='playful'] .el-tabs__item.is-active {
+  color: #000;
+  font-weight: 900;
+}
+html[data-style='playful'] .el-tabs__item {
+  color: #000;
+  font-weight: 700;
+}
+/* 4px 指示条是这套风格里唯一允许出现在内容区的强调色块 */
+html[data-style='playful'] .el-tabs__active-bar {
+  background-color: #ff6b6b;
+  height: 4px;
+}
+html[data-style='playful'] .el-tabs__nav-wrap::after {
+  background-color: #000;
+  height: 2px;
+}
+html[data-style='playful'] .el-dialog__title,
+html[data-style='playful'] .el-message-box__title {
+  color: #000;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+/* 指标小卡：白面 + 3px 黑边 + 阳光黄硬影，比卡片轻一档 */
+html[data-style='playful'] .stat {
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 0;
+  box-shadow: 4px 4px 0 #ffe66d;
+}
+
+/* 关键数字就是纯黑 900：这套风格不用颜色强调数字，用字重 */
+html[data-style='playful'] .hero-value {
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+html[data-style='playful'] .hero-value.up {
+  color: #000;
+}
+html[data-style='playful'] .hero-value.down {
+  color: #c53030;
+}
+
 /* 减少动态效果：取消位移与缩放，只保留颜色和描边的变化 */
 @media (prefers-reduced-motion: reduce) {
   html[data-style='glass'] .card,
@@ -1835,6 +2632,27 @@ html[data-style='glass'] {
   html[data-style='glass'] .el-button:not(.is-disabled):active {
     transition: none;
     transform: none;
+  }
+
+  /* 野兽派的静态倾斜保留，但悬停、按下都不再位移 */
+  html[data-style='playful'] .card,
+  html[data-style='playful'] .card:hover,
+  html[data-style='playful'] .el-button,
+  html[data-style='playful'] .el-button:not(.is-disabled):hover,
+  html[data-style='playful'] .el-button:not(.is-disabled):active {
+    transition: none;
+  }
+  html[data-style='playful'] .card:hover {
+    transform: none;
+  }
+  html[data-style='playful'] .el-button:not(.is-disabled):not(.is-link):not(.is-text):hover,
+  html[data-style='playful'] .el-button:not(.is-disabled):not(.is-link):not(.is-text):active {
+    transform: none;
+  }
+  html[data-style='playful'] .el-button--primary:not(.is-link):not(.is-text),
+  html[data-style='playful'] .el-button--primary:not(.is-link):not(.is-text):not(.is-disabled):hover,
+  html[data-style='playful'] .el-button--primary:not(.is-link):not(.is-text):not(.is-disabled):active {
+    transform: rotate(-2deg);
   }
 }
 </style>

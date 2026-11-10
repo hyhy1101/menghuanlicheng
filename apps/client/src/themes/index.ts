@@ -10,8 +10,11 @@ export type ThemeMode = 'dark' | 'light'
  * - glass 主题三：玻璃拟态。深墨夜景底上的半透明白面板，靠背景光斑与
  *   backdrop-filter 读出厚度，唯一强调色是香槟金。规范只给了暗色一套取值，
  *   所以这个风格下显示模式锁在暗色、主题色固定香槟金。
+ * - playful 主题四：俏皮野兽派。4px 黑边 + 零圆角 + 零模糊硬阴影的骨架，
+ *   五支糖果色与 -2~3 度倾斜负责俏皮。规范只给了白底亮色一套取值，
+ *   所以这个风格下显示模式锁在亮色、主题色固定珊瑚红。
  */
-export type ThemeStyle = 'neumorphic' | 'soft' | 'glass'
+export type ThemeStyle = 'neumorphic' | 'soft' | 'glass' | 'playful'
 
 /** 新拟物只有一束光，压在基底上的饱和色只留给主行动，所以主题色限定在
  * 四支高饱和紫/蓝/青/洋红里，避免暖色系把冷灰材质压成脏色。
@@ -29,11 +32,13 @@ export const THEME_ACCENTS: { id: ThemeAccent; name: string; colors: [string, st
 export const THEME_STYLES: { id: ThemeStyle; name: string; desc: string }[] = [
   { id: 'neumorphic', name: '主题一', desc: '新拟物' },
   { id: 'soft', name: '主题二', desc: '柔和界面风' },
-  { id: 'glass', name: '主题三', desc: '玻璃拟态' }
+  { id: 'glass', name: '主题三', desc: '玻璃拟态' },
+  { id: 'playful', name: '主题四', desc: '俏皮野兽派' }
 ]
 
 /** 每个风格被规范锁死的显示模式；未列出的风格（新拟物）亮暗都可选 */
 export const STYLE_FORCED_MODE: Partial<Record<ThemeStyle, ThemeMode>> = {
   soft: 'light',
-  glass: 'dark'
+  glass: 'dark',
+  playful: 'light'
 }
