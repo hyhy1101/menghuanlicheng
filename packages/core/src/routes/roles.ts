@@ -46,8 +46,11 @@ roleRoutes.post('/', zValidator('json', createRoleReqSchema), async (c) => {
     const [team] = await db.select().from(gameTeams).where(eq(gameTeams.id, body.teamId))
     if (!team) throw new ApiError(404, '号组不存在')
     serverId = team.serverId
-  } else {
+  } else if (body.serverId) {
     serverId = body.serverId
+  } else {
+    // 不归属号组时必须自己指定服务器（schema 也拦了一层，这里兜底）
+    throw new ApiError(400, '请选择服务器')
   }
   const [server] = await db.select().from(gameServers).where(eq(gameServers.id, serverId))
   if (!server) throw new ApiError(404, '服务器不存在')

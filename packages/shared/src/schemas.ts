@@ -124,14 +124,22 @@ export const updateTeamReqSchema = z.object({
   roleIds: z.array(idSchema).max(20).optional()
 })
 
-export const createRoleReqSchema = z.object({
-  name: z.string().trim().min(1).max(50),
-  level: z.number().int().min(0).max(200).default(0),
-  sect: z.string().trim().max(50).default(''),
+/**
+ * 角色的公共字段。serverId 在「归属号组」时由号组决定，所以这里不能要求必填，
+ * 改成两者至少给一个（见 createRoleReqSchema 的 refine）。
+ */
+const roleBaseSchema = z.object({
+  name: z.string().trim().min(1, '角色名不能为空').max(50, '角色名最长 50 个字'),
+  level: z.number().int('等级需为整数').min(0, '等级不能小于 0').max(200, '等级不能大于 200').default(0),
+  sect: z.string().trim().max(50, '门派最长 50 个字').default(''),
   teamId: optionalId,
-  serverId: idSchema
+  serverId: idSchema.optional()
 })
-export const updateRoleReqSchema = createRoleReqSchema.partial()
+export const createRoleReqSchema = roleBaseSchema.refine((v) => v.teamId != null || v.serverId != null, {
+  path: ['serverId'],
+  message: '请选择服务器'
+})
+export const updateRoleReqSchema = roleBaseSchema.partial()
 
 /* ---------- 里程 ---------- */
 export const recordStatusSchema = z.enum(['ACTIVE', 'FINISHED', 'DISCARDED'])

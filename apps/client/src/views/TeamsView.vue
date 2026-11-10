@@ -28,11 +28,15 @@ const newTeamServerId = ref<number | undefined>(undefined)
 const newRole = ref({ name: '', level: 175, sect: '龙宫', teamId: undefined as number | undefined, serverId: undefined as number | undefined })
 
 async function load() {
-  const [t, c, r, s] = await Promise.all([teamsApi.list(), teamsApi.compare(range.value), teamsApi.roles(), serverApi.list()])
-  teams.value = t.data.data
-  compare.value = c.data.data
-  roles.value = r.data.data
-  servers.value = s.data.data.list
+  try {
+    const [t, c, r, s] = await Promise.all([teamsApi.list(), teamsApi.compare(range.value), teamsApi.roles(), serverApi.list()])
+    teams.value = t.data.data
+    compare.value = c.data.data
+    roles.value = r.data.data
+    servers.value = s.data.data.list
+  } catch (e) {
+    ElMessage.error((e as Error).message)
+  }
 }
 
 async function createTeam() {
@@ -44,7 +48,12 @@ async function createTeam() {
     ElMessage.warning('请选择服务器')
     return
   }
-  await teamsApi.create(newTeamName.value.trim(), newTeamServerId.value)
+  try {
+    await teamsApi.create(newTeamName.value.trim(), newTeamServerId.value)
+  } catch (e) {
+    ElMessage.error((e as Error).message)
+    return
+  }
   newTeamName.value = ''
   newTeamServerId.value = undefined
   showCreateTeam.value = false
@@ -70,7 +79,12 @@ async function createRole() {
     }
     body.serverId = newRole.value.serverId
   }
-  await teamsApi.createRole(body)
+  try {
+    await teamsApi.createRole(body)
+  } catch (e) {
+    ElMessage.error((e as Error).message)
+    return
+  }
   newRole.value = { name: '', level: 175, sect: '龙宫', teamId: undefined, serverId: undefined }
   showCreateRole.value = false
   ElMessage.success('角色已创建')
@@ -92,7 +106,12 @@ async function removeTeam(id: number) {
   } catch {
     return
   }
-  await teamsApi.remove(id)
+  try {
+    await teamsApi.remove(id)
+  } catch (e) {
+    ElMessage.error((e as Error).message)
+    return
+  }
   ElMessage.success('号组已删除')
   await load()
 }
@@ -107,7 +126,12 @@ async function removeRole(id: number) {
   } catch {
     return
   }
-  await teamsApi.removeRole(id)
+  try {
+    await teamsApi.removeRole(id)
+  } catch (e) {
+    ElMessage.error((e as Error).message)
+    return
+  }
   ElMessage.success('角色已删除')
   await load()
 }
