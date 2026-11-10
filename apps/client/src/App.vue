@@ -2000,8 +2000,10 @@ html[data-style='playful'] .team-card.empty-card:hover {
   box-shadow: 12px 12px 0 #ff6b6b;
 }
 
-/* 二级面：快捷入口、今日活动行，比卡片薄一档（3px 框 + 阳光黄硬影） */
-html[data-style='playful'] .quick,
+/* 二级面：快捷入口、今日活动行，比卡片薄一档（3px 框 + 阳光黄硬影）。
+   快捷入口本身是 el-button，所以要带 .el-button 前缀，否则会被按钮那层的
+   4px 黑框和黑影盖回去。 */
+html[data-style='playful'] .el-button.quick,
 html[data-style='playful'] .activity {
   background: #fff;
   border: 3px solid #000;
@@ -2009,7 +2011,7 @@ html[data-style='playful'] .activity {
   color: #000;
   box-shadow: 4px 4px 0 #ffe66d;
 }
-html[data-style='playful'] .quick:hover,
+html[data-style='playful'] .el-button.quick:not(.is-disabled):hover,
 html[data-style='playful'] .activity:hover {
   background: #fff;
   border-color: #000;
@@ -2017,7 +2019,7 @@ html[data-style='playful'] .activity:hover {
   transform: translate(-1px, -2px);
   box-shadow: 6px 6px 0 #ff6b6b;
 }
-html[data-style='playful'] .quick:active,
+html[data-style='playful'] .el-button.quick:not(.is-disabled):active,
 html[data-style='playful'] .activity:active {
   transform: translate(3px, 3px);
   box-shadow: none;
@@ -2154,14 +2156,14 @@ html[data-style='playful'] .el-button {
     box-shadow var(--dur-3) var(--ease-out),
     background-color var(--dur-2) ease;
 }
-html[data-style='playful'] .el-button:not(.is-disabled):not(.is-link):not(.is-text):not(.btn-ghost):hover {
+html[data-style='playful'] .el-button:not(.is-disabled):not(.is-link):not(.is-text):not(.btn-ghost):not(.quick):not(.btn-record):not(.btn-gold):not(.btn-start):not(.btn-end):not(.btn-primary):not(.start-btn):hover {
   background: #fff3bf;
   border-color: #000;
   color: #000;
   transform: translate(-1px, -3px);
   box-shadow: 6px 6px 0 #000;
 }
-html[data-style='playful'] .el-button:not(.is-disabled):not(.is-link):not(.is-text):not(.btn-ghost):active {
+html[data-style='playful'] .el-button:not(.is-disabled):not(.is-link):not(.is-text):not(.btn-ghost):not(.quick):not(.btn-record):not(.btn-gold):not(.btn-start):not(.btn-end):not(.btn-primary):not(.start-btn):active {
   transform: translate(4px, 4px) scale(0.97);
   box-shadow: none;
 }
