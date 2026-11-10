@@ -95,6 +95,7 @@ function ruleText(rule: ActivityRule): string {
 }
 
 function reminderText(s: GameSourceDTO): string {
+  if (!s.rules.length) return '无开始规则，不提醒'
   if (!s.reminder.enabled) return '不提醒'
   return `提前 ${s.reminder.beforeMinutes} 分钟${s.reminder.atStart ? ' + 开始时' : ''}`
 }
@@ -131,7 +132,7 @@ function openCreate() {
     reminderEnabled: true,
     beforeMinutes: 10,
     atStart: true,
-    rules: [blankRule()]
+    rules: []
   })
 }
 
@@ -146,7 +147,8 @@ function openEdit(s: GameSourceDTO) {
     reminderEnabled: s.reminder.enabled,
     beforeMinutes: s.reminder.beforeMinutes,
     atStart: s.reminder.atStart,
-    rules: s.rules.length ? JSON.parse(JSON.stringify(s.rules)) : [blankRule()]
+    // 没有开始规则的活动（例如不限时的副本）保持空，编辑时不要凭空补一条
+    rules: s.rules.length ? JSON.parse(JSON.stringify(s.rules)) : []
   })
 }
 
@@ -169,7 +171,7 @@ function changeRuleType(rule: ActivityRule, type: ActivityRule['type']) {
 async function save() {
   const name = dialog.name.trim()
   if (!name) return ElMessage.warning('活动名不能为空')
-  if (!dialog.rules.length) return ElMessage.warning('至少配一条开始规则')
+  // 开始规则可以留空：没有固定时间的活动（例如不限时的副本）只做清单，不排场次
   for (const r of dialog.rules) {
     if (!r.start || !r.end) return ElMessage.warning('开始和结束时间都要填')
   }
@@ -294,7 +296,7 @@ onMounted(async () => {
           </el-table-column>
           <el-table-column label="提醒" min-width="150">
             <template #default="{ row }">
-              <el-tag :type="row.reminder.enabled ? 'success' : 'info'" size="small" effect="plain">
+              <el-tag :type="row.reminder.enabled && row.rules.length ? 'success' : 'info'" size="small" effect="plain">
                 {{ reminderText(row) }}
               </el-tag>
             </template>
@@ -323,7 +325,7 @@ onMounted(async () => {
           <el-input v-model="dialog.durationDesc" placeholder="例如 2 小时，可留空" maxlength="30" />
         </el-form-item>
 
-        <el-form-item label="开始规则" required>
+        <el-form-item label="开始规则">
           <div class="rules">
             <div v-for="(r, i) in dialog.rules" :key="i" class="rule-row">
               <el-select
@@ -354,14 +356,19 @@ onMounted(async () => {
               <el-time-select v-model="r.end" start="00:00" step="00:05" end="23:55" placeholder="结束" style="width: 110px" />
               <el-button link type="danger" @click="removeRule(i)">删</el-button>
             </div>
-            <el-button link type="primary" @click="addRule">+ 再加一条规则</el-button>
-            <p class="hint">结束时间早于或等于开始时间时，按跨零点场次处理。</p>
+            <el-button link type="primary" @click="addRule">
+              {{ dialog.rules.length ? '+ 再加一条规则' : '+ 添加开始规则' }}
+            </el-button>
+            <p class="hint">
+              可以留空：不限时的副本之类只作为清单保存，不排场次也不提醒。结束时间早于或等于开始时间时，按跨零点场次处理。
+            </p>
           </div>
         </el-form-item>
 
         <el-form-item label="提醒">
           <el-switch v-model="dialog.reminderEnabled" />
-          <template v-if="dialog.reminderEnabled">
+          <span v-if="!dialog.rules.length" class="inline-label">没有开始规则，不会触发提醒</span>
+          <template v-if="dialog.reminderEnabled && dialog.rules.length">
             <span class="inline-label">提前</span>
             <el-input-number v-model="dialog.beforeMinutes" :min="0" :max="120" :precision="0" controls-position="right" style="width: 110px" />
             <span class="inline-label">分钟</span>
