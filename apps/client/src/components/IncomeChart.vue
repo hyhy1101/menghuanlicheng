@@ -107,7 +107,7 @@ function render() {
 watch(() => props.points, render, { deep: true })
 
 const theme = useThemeStore()
-watch(() => [theme.mode, theme.accent], render)
+watch(() => [theme.style, theme.mode, theme.accent], render)
 
 function resize() {
   chart?.resize()

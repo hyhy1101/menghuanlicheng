@@ -306,6 +306,96 @@ html[data-accent='rose'] {
   --on-accent: #ffffff;
 }
 
+/* ============================================================================
+   主题二：柔和界面风（soft）
+
+   雾灰画布 + 纯白卡片、低饱和配色、带主色相的彩色柔光阴影，交互靠「浮起」表达。
+   组件都读同一批语义令牌，所以这里只覆盖令牌就能整站切换；少数新拟物专属的
+   光影（键帽、内凹输入框）在组件层单独改写。
+
+   只做亮色：规范只给了一套亮色取值，切到主题二时显示模式锁在亮色（见 theme store）。
+   本块必须排在 data-accent 之后 —— 两者选择器权重相同，靠顺序压住主题色。
+   ============================================================================ */
+html[data-style='soft'] {
+  /* 原始三色 → 雾灰 / 白 */
+  --base: #f1f5f9;
+  --shade: #e2e8f0;
+  --glow: #ffffff;
+  --tint: #f8fafc;
+  --sunken: #eef2f7;
+
+  /* 表面：页面雾灰，卡片纯白 */
+  --surface-page: #f1f5f9;
+  --surface-card: #ffffff;
+  --surface-tray: #f8fafc;
+  --surface-sunken: #eef2f7;
+
+  /* 文字：排除纯黑，最深一档 #1f2937 */
+  --n-0: #ffffff;
+  --n-50: #f8fafc;
+  --n-100: var(--base);
+  --n-200: var(--sunken);
+  --n-300: #dbe3ee;
+  --n-400: #cbd5e1;
+  --n-500: #94a3b8;
+  --n-600: #64748b;
+  --n-700: #475569;
+  --n-800: #334155;
+  --n-900: #1f2937;
+  --n-950: #0f172a;
+
+  --ink-1: #1f2937;
+  --ink-2: #475569;
+  --ink-3: #64748b;
+  --ink-4: #94a3b8;
+
+  --line-control: #e2e8f0;
+  --line-separator: #e8eef6;
+  --line-focus: var(--accent-500);
+
+  /* 阴影：一律带主色相的柔光，模糊 24px 起；只有输入框保留极浅的内阴影 */
+  --elev-raised: 0 12px 32px rgba(148, 163, 184, 0.25);
+  --elev-raised-lg: 0 24px 48px rgba(99, 102, 241, 0.2);
+  --elev-raised-sm: 0 8px 20px rgba(148, 163, 184, 0.22);
+  --elev-raised-xs: 0 4px 12px rgba(148, 163, 184, 0.18);
+  --elev-hover: 0 24px 48px rgba(99, 102, 241, 0.2);
+  --elev-inset: inset 0 2px 6px rgba(148, 163, 184, 0.18);
+  --elev-inset-sm: inset 0 2px 4px rgba(148, 163, 184, 0.16);
+  --elev-well: inset 0 3px 10px rgba(148, 163, 184, 0.2);
+  --elev-pressed: inset 0 4px 10px rgba(67, 56, 202, 0.28);
+  --elev-float: 0 24px 56px rgba(100, 116, 139, 0.28);
+  --scrim: rgba(15, 23, 42, 0.28);
+
+  /* 状态色：低饱和，文字压深一档保证可读 */
+  --positive: #0f9d78;
+  --positive-rgb: 16 185 129;
+  --negative: #dd5c5c;
+  --negative-rgb: 239 110 110;
+  --warning: #b45309;
+  --warning-rgb: 245 158 11;
+  --info: #4f6ef2;
+  --info-rgb: 99 132 241;
+
+  /* 品牌：规范指定的靛蓝 */
+  --accent-rgb: 99 102 241;
+  --accent-400: #818cf8;
+  --accent-500: #6366f1;
+  --accent-600: #4f46e5;
+  --ink-accent: #4f46e5;
+  --accent-glow: rgba(99, 102, 241, 0.18);
+  --btn-accent-bg: var(--accent-500);
+
+  /* 动效：柔和本身就是被感知的时长，交互给 300ms，卡片位移给到 500ms */
+  --dur-2: 200ms;
+  --dur-3: 300ms;
+  --dur-4: 500ms;
+  --ease-out: cubic-bezier(0.27, 0.01, 0.31, 1);
+
+  --bg-grid: rgba(100, 116, 139, 0.04);
+  --scroll-thumb: #cbd5e1;
+  --scroll-thumb-hover: #b6c2d2;
+}
+
 /* 物品价格分级：四档改用状态色系，避开与品牌色撞色 */
 .tier-w {
   color: var(--info);
@@ -1020,5 +1110,189 @@ html.dark .el-segmented {
 }
 .el-loading-mask {
   background-color: color-mix(in srgb, var(--base) 72%, transparent);
+}
+
+/* ============================================================================
+   主题二：组件层改写
+
+   新拟物靠内阴影和同色面表达层级，柔和界面风靠白面、彩色柔光和位移表达，
+   所以这几处不能只换令牌，得改写光影本身。只作用于 data-style=soft。
+   ============================================================================ */
+
+/* 卡片：悬停上浮并换成主色柔光（规范 4~8px，桌面密集布局取 4px） */
+html[data-style='soft'] .card {
+  transition:
+    transform var(--dur-4) var(--ease-out),
+    box-shadow var(--dur-4) var(--ease-out);
+}
+html[data-style='soft'] .card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 48px rgba(99, 102, 241, 0.2);
+}
+
+/* 按钮：静置柔光 → 悬停上浮 → 按下内凹并轻微缩放 */
+html[data-style='soft'] .el-button {
+  background: var(--surface-card);
+  box-shadow: 0 8px 20px rgba(148, 163, 184, 0.2);
+  transition:
+    box-shadow var(--dur-3) ease,
+    transform var(--dur-3) ease,
+    background-color var(--dur-2) ease,
+    color var(--dur-2) ease;
+}
+html[data-style='soft'] .el-button:not(.is-disabled):not(.is-link):not(.is-text):hover {
+  color: var(--ink-1);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(100, 116, 139, 0.24);
+}
+html[data-style='soft'] .el-button:not(.is-disabled):not(.is-link):not(.is-text):active {
+  transform: translateY(0) scale(0.97);
+  box-shadow: inset 0 3px 8px rgba(100, 116, 139, 0.22);
+}
+html[data-style='soft'] .el-button.is-disabled {
+  box-shadow: 0 4px 12px rgba(148, 163, 184, 0.16);
+}
+/* 只给实心主按钮加柔光与浮起；is-link / is-text 仍按文字链处理，避免「全部」
+   这类文字按钮被撑成紫色胶囊。 */
+html[data-style='soft'] .el-button--primary:not(.is-link):not(.is-text) {
+  background: var(--accent-500);
+  color: var(--on-accent);
+  box-shadow: 0 10px 24px rgba(99, 102, 241, 0.25);
+}
+html[data-style='soft'] .el-button--primary:not(.is-link):not(.is-text):not(.is-disabled):hover {
+  background: var(--accent-500);
+  color: var(--on-accent);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 32px rgba(99, 102, 241, 0.35);
+}
+html[data-style='soft'] .el-button--primary:not(.is-link):not(.is-text):not(.is-disabled):active {
+  background: var(--accent-600);
+  color: var(--on-accent);
+  transform: scale(0.96);
+  box-shadow: inset 0 4px 10px rgba(67, 56, 202, 0.28);
+}
+html[data-style='soft'] .el-button.is-link,
+html[data-style='soft'] .el-button.is-text {
+  background: transparent;
+  box-shadow: none;
+}
+html[data-style='soft'] .el-button.is-link:hover,
+html[data-style='soft'] .el-button.is-text:hover {
+  box-shadow: none;
+}
+/* 危险按钮必须重新声明底色：上面的 .el-button 白底优先级更高，只给文字色会变成白字白底 */
+html[data-style='soft'] .el-button--danger:not(.is-link):not(.is-text) {
+  background: var(--negative);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(221, 92, 92, 0.25);
+}
+html[data-style='soft'] .el-button--danger:not(.is-link):not(.is-text):not(.is-disabled):hover {
+  background: var(--negative);
+  color: #fff;
+  transform: translateY(-4px);
+  box-shadow: 0 18px 32px rgba(221, 92, 92, 0.35);
+}
+html[data-style='soft'] .el-button--danger:not(.is-link):not(.is-text):not(.is-disabled):active {
+  background: var(--negative);
+  color: #fff;
+  transform: scale(0.96);
+  box-shadow: inset 0 4px 10px rgba(160, 47, 47, 0.32);
+}
+
+/* 输入：雾灰填充、无描边；聚焦转白 + 4px 外环 + 柔光，尺寸不变 */
+html[data-style='soft'] .el-input__wrapper,
+html[data-style='soft'] .el-textarea__inner,
+html[data-style='soft'] .el-select__wrapper,
+html[data-style='soft'] .el-range-editor.el-input__wrapper {
+  background-color: var(--sunken) !important;
+  border-radius: var(--radius-control);
+  box-shadow: none !important;
+  transition:
+    background-color var(--dur-3) ease,
+    box-shadow var(--dur-3) ease;
+}
+html[data-style='soft'] .el-input__wrapper:hover,
+html[data-style='soft'] .el-textarea__inner:hover,
+html[data-style='soft'] .el-select__wrapper:hover {
+  background-color: #e8eef7 !important;
+  box-shadow: none !important;
+}
+html[data-style='soft'] .el-input__wrapper.is-focus,
+html[data-style='soft'] .el-textarea__inner:focus,
+html[data-style='soft'] .el-select__wrapper.is-focused {
+  background-color: var(--surface-card) !important;
+  box-shadow:
+    0 0 0 4px rgba(99, 102, 241, 0.2),
+    0 10px 26px rgba(99, 102, 241, 0.14) !important;
+}
+html[data-style='soft'] .el-input.is-disabled .el-input__wrapper,
+html[data-style='soft'] .el-select__wrapper.is-disabled {
+  background-color: var(--surface-tray) !important;
+  box-shadow: none !important;
+}
+
+/* 开关：雾灰轨道，选中是靛蓝 + 主色柔光 */
+html[data-style='soft'] .el-switch__core {
+  background: var(--sunken) !important;
+  box-shadow: none !important;
+}
+html[data-style='soft'] .el-switch.is-checked .el-switch__core {
+  background: var(--accent-500) !important;
+  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3) !important;
+}
+html[data-style='soft'] .el-switch__core .el-switch__action {
+  box-shadow: 0 2px 6px rgba(100, 116, 139, 0.25);
+}
+
+/* 复选 / 单选：白底 + 一圈浅灰内描边，选中是靛蓝实心 */
+html[data-style='soft'] .el-checkbox__inner,
+html[data-style='soft'] .el-radio__inner {
+  background: var(--surface-card);
+  box-shadow: inset 0 0 0 1.5px var(--line-control) !important;
+}
+html[data-style='soft'] .el-checkbox__input.is-checked .el-checkbox__inner,
+html[data-style='soft'] .el-radio__input.is-checked .el-radio__inner {
+  background: var(--accent-500);
+  box-shadow: none !important;
+}
+
+/* 分段控件：雾灰轨道 + 白色滑块 */
+html[data-style='soft'] .el-segmented {
+  background: var(--sunken);
+  box-shadow: none;
+}
+html[data-style='soft'] .el-segmented__item-selected {
+  background: var(--surface-card);
+  box-shadow: 0 4px 12px rgba(148, 163, 184, 0.25);
+}
+
+/* 单选键帽 / 分页：去掉新拟物的内凹，换成白面 + 柔光 */
+html[data-style='soft'] .el-radio-button__inner {
+  box-shadow: 0 4px 12px rgba(148, 163, 184, 0.18);
+}
+html[data-style='soft'] .el-radio-button__original-radio:checked + .el-radio-button__inner {
+  color: var(--accent-600);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
+}
+html[data-style='soft'] .el-pagination.is-background .el-pager li,
+html[data-style='soft'] .el-pagination.is-background .btn-prev,
+html[data-style='soft'] .el-pagination.is-background .btn-next {
+  box-shadow: 0 4px 12px rgba(148, 163, 184, 0.18);
+}
+html[data-style='soft'] .el-pagination.is-background .el-pager li.is-active {
+  color: var(--accent-600);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
+}
+
+/* 减少动态效果：位移与缩放全部取消，只保留颜色变化 */
+@media (prefers-reduced-motion: reduce) {
+  html[data-style='soft'] .card,
+  html[data-style='soft'] .card:hover,
+  html[data-style='soft'] .el-button,
+  html[data-style='soft'] .el-button:not(.is-disabled):hover,
+  html[data-style='soft'] .el-button:not(.is-disabled):active {
+    transition: none;
+    transform: none;
+  }
 }
 </style>

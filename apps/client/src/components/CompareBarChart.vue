@@ -111,7 +111,7 @@ watch(() => props.items, render, { deep: true })
 watch(() => [props.height, props.diverging, props.labelWidth], render)
 
 const theme = useThemeStore()
-watch(() => [theme.mode, theme.accent], render)
+watch(() => [theme.style, theme.mode, theme.accent], render)
 
 function resize() {
   chart?.resize()

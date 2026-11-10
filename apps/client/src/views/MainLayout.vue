@@ -2,7 +2,7 @@
 import { computed, onMounted } from 'vue'
 import { RouterView, useRoute, useRouter } from 'vue-router'
 import { useThemeStore } from '../stores/theme'
-import { THEME_ACCENTS } from '../themes'
+import { THEME_ACCENTS, THEME_STYLES } from '../themes'
 import { useAppStore } from '../stores/app'
 import { assetUrl } from '../utils/asset'
 
@@ -97,7 +97,7 @@ onMounted(() => {
 
       <span class="date">{{ today }}</span>
 
-      <el-popover trigger="click" :width="224" popper-class="theme-pop">
+      <el-popover trigger="click" :width="248" popper-class="theme-pop">
         <template #reference>
           <button class="theme-btn" title="主题设置">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
@@ -107,16 +107,32 @@ onMounted(() => {
         </template>
         <div class="theme-panel">
           <div class="theme-row">
+            <span class="theme-label">界面风格</span>
+            <div class="style-opts">
+              <button
+                v-for="s in THEME_STYLES"
+                :key="s.id"
+                class="style-opt"
+                :class="{ on: theme.style === s.id }"
+                :title="s.desc"
+                @click="theme.setStyle(s.id)"
+              >
+                {{ s.name }}
+              </button>
+            </div>
+          </div>
+          <div class="theme-row">
             <span class="theme-label">显示模式</span>
             <el-switch
               :model-value="theme.mode === 'light'"
+              :disabled="!theme.canToggleMode"
               inline-prompt
               active-text="亮"
               inactive-text="暗"
               @change="theme.toggleMode()"
             />
           </div>
-          <div class="theme-row">
+          <div v-if="theme.canPickAccent" class="theme-row">
             <span class="theme-label">主题色</span>
             <div class="swatches">
               <button
@@ -130,6 +146,7 @@ onMounted(() => {
               />
             </div>
           </div>
+          <p v-else class="theme-hint">柔和界面风按规范固定亮色与靛蓝主色。</p>
         </div>
       </el-popover>
 
@@ -460,5 +477,162 @@ html.dark .nav-item.on {
   flex: 1;
   overflow: auto;
   padding: 28px 32px 32px;
+}
+
+/* ===== 主题设置面板：界面风格切换（两种风格下都要好看） ===== */
+.style-opts {
+  display: flex;
+  gap: 6px;
+}
+.style-opt {
+  padding: 5px 10px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--surface-card);
+  color: var(--ink-3);
+  font-family: var(--sans-font);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: var(--elev-raised-xs);
+  transition:
+    box-shadow var(--dur-3) var(--ease-out),
+    background-color var(--dur-2) ease,
+    color var(--dur-2) ease;
+}
+.style-opt:hover {
+  color: var(--ink-1);
+  box-shadow: var(--elev-hover);
+}
+/* 主题一沿用新拟物的「按下」语义：选中 = 凹槽，不抢占主行动的那一抹饱和色 */
+.style-opt.on {
+  color: var(--accent-600);
+  font-weight: 600;
+  box-shadow: var(--elev-pressed);
+}
+/* 柔和风格里选项退成雾灰底的分段控件，选中项才是实心靛蓝 */
+html[data-style='soft'] .style-opt {
+  background: var(--sunken);
+  box-shadow: none;
+}
+html[data-style='soft'] .style-opt:hover {
+  background: #e8eef7;
+  color: var(--ink-1);
+  box-shadow: none;
+}
+html[data-style='soft'] .style-opt.on {
+  background: var(--accent-500);
+  color: var(--on-accent);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.28);
+}
+.theme-hint {
+  margin: 0;
+  color: var(--ink-4);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* ============================================================================
+   主题二：柔和界面风 —— 顶栏与导航
+
+   新拟物键帽靠「同色 + 明暗阴影」表达，柔和风格里改成透明胶囊：
+   悬停淡靛蓝底、当前页靛蓝 10% 底 + 深靛蓝字，按下去轻微缩放。
+   ============================================================================ */
+html[data-style='soft'] .topbar {
+  background: var(--surface-card);
+  box-shadow: 0 8px 24px rgba(148, 163, 184, 0.18);
+}
+html[data-style='soft'] .logo-badge {
+  border-radius: 16px;
+  background: rgba(99, 102, 241, 0.1);
+  box-shadow: none;
+}
+html[data-style='soft'] .nav-item {
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--ink-3);
+  box-shadow: none;
+  transition:
+    background-color var(--dur-3) ease,
+    color var(--dur-2) ease,
+    transform var(--dur-3) ease;
+}
+html[data-style='soft'] .nav-item:hover {
+  background: rgba(99, 102, 241, 0.08);
+  color: var(--ink-1);
+  transform: none;
+  box-shadow: none;
+}
+html[data-style='soft'] .nav-item:active {
+  transform: scale(0.97);
+  box-shadow: none;
+}
+html[data-style='soft'] .nav-item.on,
+html[data-style='soft'] .nav-item.on:active {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--accent-600);
+  transform: none;
+  box-shadow: none;
+}
+html[data-style='soft'] .nav-item.on::after {
+  display: none;
+}
+html[data-style='soft'] .btn-record {
+  box-shadow: 0 10px 24px rgba(99, 102, 241, 0.25);
+  transition:
+    box-shadow var(--dur-3) ease,
+    transform var(--dur-3) ease,
+    background-color var(--dur-2) ease;
+}
+html[data-style='soft'] .btn-record:hover {
+  background: var(--accent-500);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 32px rgba(99, 102, 241, 0.35);
+}
+html[data-style='soft'] .btn-record:active {
+  background: var(--accent-600);
+  transform: scale(0.96);
+  box-shadow: inset 0 4px 10px rgba(67, 56, 202, 0.28);
+}
+html[data-style='soft'] .user-box {
+  background: var(--surface-card);
+  box-shadow: 0 4px 12px rgba(148, 163, 184, 0.18);
+  transition:
+    box-shadow var(--dur-3) ease,
+    transform var(--dur-3) ease;
+}
+html[data-style='soft'] .user-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(100, 116, 139, 0.22);
+}
+html[data-style='soft'] .theme-btn {
+  background: var(--surface-card);
+  box-shadow: 0 4px 12px rgba(148, 163, 184, 0.18);
+  transition:
+    box-shadow var(--dur-3) ease,
+    transform var(--dur-3) ease,
+    color var(--dur-2) ease;
+}
+html[data-style='soft'] .theme-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(100, 116, 139, 0.22);
+  color: var(--accent-500);
+}
+html[data-style='soft'] .theme-btn:active {
+  transform: scale(0.96);
+  box-shadow: inset 0 3px 8px rgba(100, 116, 139, 0.22);
+}
+html[data-style='soft'] .avatar {
+  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.28);
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-style='soft'] .nav-item,
+  html[data-style='soft'] .nav-item:hover,
+  html[data-style='soft'] .nav-item:active,
+  html[data-style='soft'] .user-box:hover,
+  html[data-style='soft'] .theme-btn:hover {
+    transition: none;
+    transform: none;
+  }
 }
 </style>
