@@ -95,8 +95,8 @@ onMounted(async () => {
     <section class="card">
       <h3>版本</h3>
       <div class="kv"><span>当前版本</span><b>{{ version }}</b></div>
-      <div class="kv"><span>数据文件</span><code>{{ dbFile || '—' }}</code></div>
-      <div class="kv"><span>数据目录</span><code>{{ userData || '—' }}</code></div>
+      <div class="kv"><span>数据文件</span><code class="selectable">{{ dbFile || '—' }}</code></div>
+      <div class="kv"><span>数据目录</span><code class="selectable">{{ userData || '—' }}</code></div>
       <div class="update-row">
         <el-button :loading="checking" @click="checkUpdate">检查更新</el-button>
         <span class="hint">仅在点击时请求一次 GitHub Release。</span>

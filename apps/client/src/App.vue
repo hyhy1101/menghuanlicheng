@@ -786,6 +786,19 @@ body,
 #app {
   height: 100%;
   margin: 0;
+  /* 桌面应用惯例：按住左键拖拽不选中文字，避免点按钮、拖开关时把标签选蓝 */
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* 例外：输入类控件照常选中/拖选，需要复制的文本加 .selectable */
+input,
+textarea,
+[contenteditable='true'],
+.selectable,
+.selectable * {
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 /* 页面底就是所有元素的底色：材质连续，没有底色差 */
