@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { ElMessage } from 'element-plus'
+import { UPDATE_REPO } from '@lc/shared'
 import { useAppStore } from '../stores/app'
 import type { BackupFile, UpdateCheckResult } from '../types/bridge'
 
@@ -15,7 +16,8 @@ const loadingBackups = ref(false)
 const checking = ref(false)
 const updateResult = ref<UpdateCheckResult | null>(null)
 
-const repo = () => (app.settings?.updateRepo ?? '').trim()
+/** 仓库地址写死在程序里（shared/constants.ts），不再从设置读取 */
+const repo = () => UPDATE_REPO
 
 async function loadInfo() {
   const info = await app.loadInfo()
@@ -60,6 +62,9 @@ async function checkUpdate() {
       return
     }
     updateResult.value = res.data
+  } catch (e) {
+    // 主进程异常（如 IPC 出错）也要给个提示，不能只留一个转圈
+    ElMessage.error((e as Error).message || '检查更新失败')
   } finally {
     checking.value = false
   }
@@ -94,8 +99,7 @@ onMounted(async () => {
       <div class="kv"><span>数据目录</span><code>{{ userData || '—' }}</code></div>
       <div class="update-row">
         <el-button :loading="checking" @click="checkUpdate">检查更新</el-button>
-        <span v-if="!repo()" class="hint">未配置更新仓库，应用不会联网。</span>
-        <span v-else class="hint">仅在点击时请求一次 GitHub Release。</span>
+        <span class="hint">仅在点击时请求一次 GitHub Release。</span>
       </div>
       <div v-if="updateResult" class="update-result">
         <template v-if="updateResult.hasUpdate">

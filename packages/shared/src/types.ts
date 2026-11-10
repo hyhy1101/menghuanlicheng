@@ -236,6 +236,16 @@ export interface UserSettingsDTO {
   closeToTray: boolean
 }
 
+/* ---------- 示例数据初始化 ---------- */
+export interface DemoInitResultDTO {
+  /** 是否清空了原有业务数据 */
+  reset: boolean
+  servers: number
+  teams: number
+  roles: number
+  records: number
+}
+
 /* ---------- 统计 ---------- */
 export interface IncomeTrendPoint {
   date: string

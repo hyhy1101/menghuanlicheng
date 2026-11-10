@@ -282,7 +282,6 @@ sessionRoutes.post('/', zValidator('json', createSessionReqSchema), async (c) =>
 
   let roleCount = 1
   let serverId: number
-  let serverRow: typeof gameServers.$inferSelect | undefined
 
   if (body.teamId) {
     const [team] = await db.select().from(gameTeams).where(eq(gameTeams.id, body.teamId))
@@ -299,7 +298,7 @@ sessionRoutes.post('/', zValidator('json', createSessionReqSchema), async (c) =>
     if (!role) throw new ApiError(404, '角色不存在')
     serverId = role.serverId
   }
-  serverRow = (await db.select().from(gameServers).where(eq(gameServers.id, serverId)))[0]
+  const serverRow = (await db.select().from(gameServers).where(eq(gameServers.id, serverId)))[0]
   if (!serverRow) throw new ApiError(404, '服务器不存在')
 
   const startTime = body.startTime ?? nowStr()

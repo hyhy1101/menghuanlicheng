@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { profileApi, serverApi } from '../api/basic'
+import { profileApi, serverApi, settingsApi } from '../api/basic'
 import { teamsApi } from '../api/dashboard'
 import { useAppStore } from '../stores/app'
 import { assetUrl } from '../utils/asset'
@@ -22,6 +22,9 @@ const serverDialog = reactive({
   name: '',
   cardPrice: 12800
 })
+
+const initDialog = reactive({ visible: false, reset: false })
+const initializing = ref(false)
 
 async function loadAll() {
   await app.ensureSettings()
@@ -139,6 +142,33 @@ async function patch(p: Record<string, unknown>) {
   }
 }
 
+/* ---------------- 示例数据 ---------------- */
+
+function openInit() {
+  initDialog.reset = false
+  initDialog.visible = true
+}
+
+async function doInit() {
+  initializing.value = true
+  try {
+    const { data } = await settingsApi.initDemo(initDialog.reset)
+    const r = data.data
+    initDialog.visible = false
+    await loadAll()
+    await loadProfile()
+    const { data: next } = await settingsApi.get()
+    app.setSettings(next.data)
+    ElMessage.success(
+      `已初始化：${r.servers} 个服务器、${r.teams} 个号组、${r.roles} 个角色、${r.records} 条记录`
+    )
+  } catch (e) {
+    ElMessage.error((e as Error).message)
+  } finally {
+    initializing.value = false
+  }
+}
+
 async function toggleAutoLaunch(v: boolean) {
   try {
     await window.lc.setAutoLaunch(v)
@@ -248,22 +278,36 @@ onMounted(async () => {
     </section>
 
     <section class="card">
-      <h3>更新检查</h3>
-      <p class="hint">
-        填 GitHub 仓库（形如 <code>owner/repo</code>）后，「关于」页可以手动检查 Release。
-        留空 = 不检查，应用完全不联网。
-      </p>
-      <div class="form-row">
-        <span class="label">仓库</span>
-        <el-input
-          :model-value="app.settings?.updateRepo ?? ''"
-          placeholder="owner/repo"
-          maxlength="120"
-          style="width: 300px"
-          @change="(v: string) => patch({ updateRepo: v.trim() })"
-        />
+      <div class="card-head">
+        <h3>示例数据</h3>
+        <el-button size="small" @click="openInit">一键初始化</el-button>
       </div>
+      <p class="hint">
+        生成 2 个服务器、3 个号组、15 个角色和最近两周的里程记录，用来快速看报表效果。
+        物品与活动不受影响。
+      </p>
     </section>
+
+    <el-dialog v-model="initDialog.visible" title="一键初始化示例数据" width="480px">
+      <div class="init-body">
+        <p class="init-lead">会创建：</p>
+        <ul class="init-list">
+          <li>2 个服务器（珍宝阁、紫禁城，含点卡单价）</li>
+          <li>3 个号组、15 个角色</li>
+          <li>最近两周的 15 条已结算里程记录和点卡成本</li>
+        </ul>
+        <el-checkbox v-model="initDialog.reset">清空现有服务器 / 号组 / 角色 / 记录后重建</el-checkbox>
+        <p class="init-warn">
+          清空不可撤销，建议先在「关于 / 备份」导出备份。初始化后默认服务器与默认号组会指向示例数据。
+        </p>
+      </div>
+      <template #footer>
+        <el-button @click="initDialog.visible = false">取消</el-button>
+        <el-button :type="initDialog.reset ? 'danger' : 'primary'" :loading="initializing" @click="doInit">
+          {{ initDialog.reset ? '清空并初始化' : '开始初始化' }}
+        </el-button>
+      </template>
+    </el-dialog>
 
     <el-dialog v-model="serverDialog.visible" :title="serverDialog.id ? '编辑服务器' : '添加服务器'" width="420px">
       <el-form label-width="110px">
@@ -354,5 +398,24 @@ code {
   background: var(--bg-raised);
   border-radius: 4px;
   padding: 1px 4px;
+}
+.init-body {
+  font-size: 13px;
+}
+.init-lead {
+  margin: 0 0 6px;
+  color: var(--text-secondary);
+}
+.init-list {
+  margin: 0 0 14px;
+  padding-left: 18px;
+  color: var(--text-secondary);
+  line-height: 1.9;
+}
+.init-warn {
+  margin: 8px 0 0;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.6;
 }
 </style>

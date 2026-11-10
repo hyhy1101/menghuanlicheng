@@ -19,6 +19,7 @@ import {
   type UserSettingsDTO
 } from '@lc/shared'
 import { db } from '../db/current.js'
+import { initDemoData } from '../db/demo.js'
 import {
   gameItems,
   gameServers,
@@ -617,5 +618,21 @@ basicRoutes.post(
     const rel = saveDataUrlImage('avatars', c.req.valid('json').dataUrl)
     await db.update(profile).set({ avatar: rel }).where(eq(profile.id, 1))
     return c.json(ok({ avatar: rel }))
+  }
+)
+
+/* ================= 示例数据 ================= */
+
+/**
+ * 一键初始化示例数据（服务器 / 号组 / 角色 / 里程记录）。
+ * reset = true 时先清空这几张业务表再重建；物品与活动不受影响。
+ */
+basicRoutes.post(
+  '/init-demo',
+  zValidator('json', z.object({ reset: z.boolean().optional() }).default({})),
+  async (c) => {
+    const { reset } = c.req.valid('json')
+    const data = await initDemoData(Boolean(reset))
+    return c.json(ok(data))
   }
 )

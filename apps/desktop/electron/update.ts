@@ -1,10 +1,11 @@
 import { app, net } from 'electron'
+import { UPDATE_REPO } from '@lc/shared'
 
 /**
  * 手动检查更新（整个应用里唯一会发网络请求的地方）。
  *
  * 只在用户点「检查更新」时调用一次；不做后台轮询、不上报任何数据。
- * 仓库地址来自设置里的 owner/repo，为空则前端直接禁用按钮。
+ * 仓库地址写死在 @lc/shared 的 UPDATE_REPO 里，界面不再提供配置项。
  */
 export interface UpdateInfo {
   currentVersion: string
@@ -40,16 +41,24 @@ export function compareVersion(a: string, b: string): number {
   return 0
 }
 
-export async function checkUpdate(repo: string): Promise<UpdateInfo> {
+export async function checkUpdate(repo: string = UPDATE_REPO): Promise<UpdateInfo> {
   const currentVersion = app.getVersion()
-  if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) {
-    throw new Error('请先在设置里填写更新仓库（owner/repo）')
+  const target = (repo || UPDATE_REPO).trim()
+  if (!/^[\w.-]+\/[\w.-]+$/.test(target)) {
+    throw new Error('更新仓库地址配置有误（应为 owner/repo）')
   }
 
-  const res = await net.fetch(`https://api.github.com/repos/${repo}/releases/latest`, {
-    headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'mengHuanLiCheng' }
-  })
-  if (res.status === 404) throw new Error('没有找到 Release，仓库地址或发布状态可能不对')
+  let res: Response
+  try {
+    // 必须设超时：网络不通时 net.fetch 会挂很久，界面一直转圈
+    res = await net.fetch(`https://api.github.com/repos/${target}/releases/latest`, {
+      headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'mengHuanLiCheng' },
+      signal: AbortSignal.timeout(8000)
+    })
+  } catch {
+    throw new Error('连不上 GitHub，检查更新失败。请检查网络后重试')
+  }
+  if (res.status === 404) throw new Error('还没有发布 Release，或仓库地址不对')
   if (!res.ok) throw new Error(`检查更新失败（HTTP ${res.status}）`)
 
   const json = (await res.json()) as ReleaseResponse

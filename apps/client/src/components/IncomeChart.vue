@@ -15,7 +15,12 @@ function render() {
   chart ??= echarts.init(el.value)
   const dates = props.points.map((p) => p.date.slice(5))
   // 主题颜色跟随当前 mode/accent（canvas 不解析 var()，需先取计算值）
+  // --accent-rgb 是空格分隔的「109 93 252」；canvas 的 rgba() 只认逗号分隔，
+  // 直接拼会得到 rgba(109 93 252, 0.22) 并抛 SyntaxError，把整个页面卡住
   const accentRgb = cssVar('--accent-rgb')
+    .split(/[\s,]+/)
+    .filter(Boolean)
+    .join(', ')
   const accent = (alpha: number) => `rgba(${accentRgb}, ${alpha})`
   const accent400 = cssVar('--accent-400')
   const accent500 = cssVar('--accent-500')

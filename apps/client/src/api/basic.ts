@@ -1,6 +1,7 @@
 import { http } from './http'
 import type {
   ActivityOccurrenceDTO,
+  DemoInitResultDTO,
   GameItemDTO,
   GameServerDTO,
   GameSourceDTO,
@@ -87,7 +88,9 @@ export const activityApi = {
 /** 设置 / 本地档案 */
 export const settingsApi = {
   get: () => http.get<UserSettingsDTO>('/settings'),
-  update: (body: Partial<UserSettingsDTO>) => http.put<UserSettingsDTO>('/settings', body)
+  update: (body: Partial<UserSettingsDTO>) => http.put<UserSettingsDTO>('/settings', body),
+  /** 一键初始化示例数据；reset = 清空现有服务器/号组/角色/记录后重建 */
+  initDemo: (reset = false) => http.post<DemoInitResultDTO>('/init-demo', { reset })
 }
 
 export const profileApi = {
