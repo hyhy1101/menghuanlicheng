@@ -45,13 +45,30 @@ function isFailure(res: ApiEnvelope | BridgeFailure): res is BridgeFailure {
   return (res as BridgeFailure).ok === false
 }
 
+/**
+ * 请求体必须先变成纯数据再交给 window.lc.call。
+ *
+ * 桥在把参数送进主进程前会做一次结构化拷贝，Vue 的 reactive/ref 是 Proxy，
+ * 拷贝时直接抛 "An object could not be cloned"。请求体本来就要被主进程
+ * JSON.stringify 后交给路由，所以这里按同一套 JSON 规约还原，语义不变。
+ */
+function toPlainBody(body: unknown): unknown {
+  if (body === undefined || body === null || typeof body !== 'object') return body
+  try {
+    return JSON.parse(JSON.stringify(body))
+  } catch {
+    // 循环引用等无法 JSON 化的情况保持原样，让它照旧报出真实错误
+    return body
+  }
+}
+
 async function request<T>(
   method: 'GET' | 'POST' | 'PUT' | 'DELETE',
   path: string,
   body?: unknown
 ): Promise<{ data: ApiEnvelope<T> }> {
   if (!window.lc?.call) throw new ApiError('桌面宿主未就绪，请重启应用', 500)
-  const res = await window.lc.call<T>(method, API_BASE + path, body)
+  const res = await window.lc.call<T>(method, API_BASE + path, toPlainBody(body))
   if (isFailure(res)) throw new ApiError(res.msg || '操作失败', res.code, res.data)
   return { data: res }
 }
